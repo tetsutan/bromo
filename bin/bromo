@@ -1,0 +1,11 @@
+#!/usr/bin/env ruby
+
+require 'bromo'
+
+require Bromo::Config.rc_path if Bromo::Config.check_path
+
+if Bromo::Config.check_config
+  Bromo::Recorder.run
+  # Bromo::Server.run!
+end
+
