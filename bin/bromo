@@ -5,12 +5,12 @@ require 'bromo'
 require Bromo::Config.rc_path if Bromo::Config.check_path
 
 if Bromo::Config.check_config
-  Bromo::Recorder.start
+  Bromo::Core.start
   # Bromo::Server.run!
 
   # debug
   sleep 5
-  Bromo::Recorder.stop
+  Bromo::Core.stop
 
 end
 

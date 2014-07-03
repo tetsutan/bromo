@@ -13,7 +13,7 @@ module Bromo
 
       def exsleep(time, original_sleep_only=false)
 
-        return false if !Bromo::Recorder.running?
+        return false if !Bromo::Core.running?
 
         start = Time.now
         divided_sleep_time = 5
