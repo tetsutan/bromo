@@ -15,3 +15,10 @@ gem 'sinatra'
 gem 'activesupport', :require => 'active_support/all'
 gem 'activerecord'
 gem 'sinatra-activerecord', :require => 'sinatra/activerecord'
+
+# test
+group :development do
+  gem "rspec"
+end
+
+

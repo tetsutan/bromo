@@ -8,6 +8,7 @@ module Bromo
     include Utils::Exsleep
 
     attr_accessor :running
+    attr_accessor :schedule_updater
 
     def self.core
       @@core ||= self.new
@@ -35,6 +36,11 @@ module Bromo
       core.running
     end
 
+    def initialize
+      logger.debug("core: initialize")
+      self.schedule_updater = ScheduleUpdater.new
+    end
+
     def start_refresh_schedule
       @refresh_schedule_thread_flag = false
       @refresh_schedule_thread.join if @refresh_schedule_thread
@@ -43,13 +49,9 @@ module Bromo
 
       @refresh_schedule_thread = Thread.new do
 
-        while exsleep(3) do
+        while schedule_updater.first_update? || exsleep(Utils::Date.next("500") - Time.now) do
           break if !@refresh_schedule_thread_flag
-
-          Config.broadcaster_names
-
-          p "hello 1"
-
+          schedule_updater.update
         end
       end
 

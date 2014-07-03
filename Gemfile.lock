@@ -16,6 +16,7 @@ GEM
       tzinfo (~> 1.1)
     arel (5.0.1.20140414130214)
     builder (3.2.2)
+    diff-lcs (1.2.5)
     i18n (0.6.9)
     json (1.8.1)
     mini_portile (0.5.2)
@@ -26,6 +27,18 @@ GEM
     rack-protection (1.5.2)
       rack
     rmagick (2.13.2)
+    rspec (3.0.0)
+      rspec-core (~> 3.0.0)
+      rspec-expectations (~> 3.0.0)
+      rspec-mocks (~> 3.0.0)
+    rspec-core (3.0.2)
+      rspec-support (~> 3.0.0)
+    rspec-expectations (3.0.2)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.0.0)
+    rspec-mocks (3.0.2)
+      rspec-support (~> 3.0.0)
+    rspec-support (3.0.2)
     sinatra (1.4.4)
       rack (~> 1.4)
       rack-protection (~> 1.4)
@@ -50,6 +63,7 @@ DEPENDENCIES
   activerecord
   activesupport
   nokogiri
+  rspec
   sinatra
   sinatra-activerecord
   sqlite3
