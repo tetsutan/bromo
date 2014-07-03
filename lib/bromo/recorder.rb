@@ -1,51 +1,70 @@
 
+
 module Bromo
+
   class Recorder
+    # extend Concern
+    include Utils::Logger
+    include Utils::Exsleep
 
-    def self.run
+    attr_accessor :running
 
-      start_refresh_schedule
-      start_check_queue
+    def self.recorder
+      @@recorder ||= self.new
+    end
 
-      sleep 5
+    def self.start
 
-      stop_refresh_schedule
-      stop_check_queue
-
-      @@refresh_schedule_thread.join if @@refresh_schedule_thread
+      logger.debug("start refresh")
+      recorder.running = true
+      recorder.start_refresh_schedule
+      recorder.start_check_queue
 
     end
 
-    @@refresh_schedule_thread = nil
-    @@refresh_schedule_thread_flag = false
-    def self.start_refresh_schedule
-      @@refresh_schedule_thread_flag = false
-      @@refresh_schedule_thread.join if @@refresh_schedule_thread
+    def self.stop
 
-      @@refresh_schedule_thread_flag = true
+      logger.debug("stop refresh")
+      recorder.running = false
+      recorder.stop_refresh_schedule
+      recorder.stop_check_queue
 
-      @@refresh_schedule_thread = Thread.new do
+    end
 
-        Logger.debug("hoge")
-        loop do
-          Logger.debug(@@refresh_schedule_thread_flag)
-          break if !@@refresh_schedule_thread_flag
-          sleep 1
+    def self.running?
+      recorder.running
+    end
+
+    def start_refresh_schedule
+      @refresh_schedule_thread_flag = false
+      @refresh_schedule_thread.join if @refresh_schedule_thread
+
+      @refresh_schedule_thread_flag = true
+
+      @refresh_schedule_thread = Thread.new do
+
+        while exsleep(3) do
+          break if !@refresh_schedule_thread_flag
+
+          Config.broadcaster_names
+
           p "hello 1"
+
         end
       end
 
     end
 
     @check_queue_thread = nil
-    def self.start_check_queue
+    def start_check_queue
 
     end
 
-    def self.stop_refresh_schedule
-      @@refresh_schedule_thread_flag = false
+    def stop_refresh_schedule
+      @refresh_schedule_thread_flag = false
+      @refresh_schedule_thread.join if @refresh_schedule_thread
     end
-    def self.stop_check_queue
+    def stop_check_queue
       @check_queue_thread_flag = false
     end
 

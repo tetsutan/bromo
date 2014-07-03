@@ -9,6 +9,7 @@ module Bromo
       sqlite_name: "data.sql",
       host: 'localhost', # sinatra set host
       port: '7970', # sinatra set port
+
     }
 
     def self.configure(&block)
@@ -54,6 +55,10 @@ module Bromo
 
       @@broadcaster_names.uniq!
     end
+    def self.broadcaster_names
+      @@broadcaster_names
+    end
+
 
     def self.method_missing(method, value = nil, *args, &block)
       if value
