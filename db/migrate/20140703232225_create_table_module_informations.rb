@@ -3,7 +3,7 @@ class CreateTableModuleInformations < ActiveRecord::Migration
 
     create_table :module_informations do |t|
       t.string :module_name
-      t.timestamps
+      t.datetime :schedule_updated_at
     end
 
   end

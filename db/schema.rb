@@ -15,8 +15,7 @@ ActiveRecord::Schema.define(version: 20140703232225) do
 
   create_table "module_informations", force: true do |t|
     t.string   "module_name"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "schedule_updated_at"
   end
 
   create_table "schedules", force: true do |t|
