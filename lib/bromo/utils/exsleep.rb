@@ -13,6 +13,7 @@ module Bromo
 
       def exsleep(time, original_sleep_only=false)
 
+        Logger.logger.debug("stop exsleep") if !Bromo::Core.running?
         return false if !Bromo::Core.running?
 
         start = Time.now

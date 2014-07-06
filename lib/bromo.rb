@@ -3,11 +3,16 @@ require 'bromo/utils'
 require 'bromo/env'
 
 require 'bromo/config'
-require 'bromo/server'
-# require 'bromo/manager'
 
+require 'bromo/server'
+require 'bromo/manager'
 require 'bromo/schedule_updater'
+
+require 'bromo/model'
+require 'bromo/media'
 
 require 'bromo/core'
 
-
+# DB設定ファイルの読み込み
+ActiveRecord::Base.configurations = YAML.load_file('config/database.yml')
+ActiveRecord::Base.establish_connection(:development)

@@ -3,9 +3,11 @@ module Bromo
 
     def update
 
-      Config.broadcaster_names.each do |broadcaster_name|
-
+      Manager.medias.each do |m|
+        m.update_schedule
       end
+
+
 
       # REMOVEME DEBUG
       sleep 5
@@ -17,6 +19,8 @@ module Bromo
       @last_updated_at.nil?
     end
 
-
+    def minimum_refresh_time_to_left
+      Manager.medias.map(&:refresh_time_since).min - Time.now
+    end
   end
 end

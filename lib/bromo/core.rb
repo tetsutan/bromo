@@ -49,7 +49,7 @@ module Bromo
 
       @refresh_schedule_thread = Thread.new do
 
-        while schedule_updater.first_update? || exsleep(Utils::Date.next("500") - Time.now) do
+        while schedule_updater.first_update? || exsleep(schedule_updater.minimum_refresh_time_to_left) do
           break if !@refresh_schedule_thread_flag
           schedule_updater.update
         end

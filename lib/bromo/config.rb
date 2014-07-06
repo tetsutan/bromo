@@ -48,7 +48,8 @@ module Bromo
       broadcaster_name = broadcaster_name.to_s
 
       if(broadcaster_name == 'all')
-        @@broadcaster_names = %w/ag radiko/ #FIXME
+        # @@broadcaster_names = %w/ag radiko/ #FIXME
+        @@broadcaster_names = %w/radiko/ #FIXME
       else
         @@broadcaster_names.push broadcaster_name
       end
