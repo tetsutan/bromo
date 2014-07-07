@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140703232225) do
+ActiveRecord::Schema.define(version: 20140707001123) do
 
   create_table "module_informations", force: true do |t|
     t.string   "module_name"
@@ -26,7 +26,7 @@ ActiveRecord::Schema.define(version: 20140703232225) do
     t.integer "from_time"
     t.integer "to_time"
     t.string  "finger_print"
-    t.integer "recorded"
+    t.integer "recorded",     default: 0
     t.string  "file_path"
     t.string  "image_path"
     t.string  "reserved_1"
