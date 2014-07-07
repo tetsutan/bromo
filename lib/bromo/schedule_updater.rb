@@ -3,14 +3,9 @@ module Bromo
 
     def update
 
-      Manager.medias.each do |m|
+      QueueManager.medias.each do |m|
         m.update_schedule
       end
-
-
-
-      # REMOVEME DEBUG
-      sleep 5
 
       @last_updated_at = Time.now
     end
@@ -20,7 +15,7 @@ module Bromo
     end
 
     def minimum_refresh_time_to_left
-      Manager.medias.map(&:refresh_time_since).min - Time.now
+      QueueManager.medias.map(&:refresh_time_since).min - Time.now
     end
   end
 end

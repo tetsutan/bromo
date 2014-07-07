@@ -8,6 +8,7 @@ module Bromo
     include Utils::Exsleep
 
     attr_accessor :running
+    attr_accessor :queue_manager
     attr_accessor :schedule_updater
 
     def self.core
@@ -39,6 +40,7 @@ module Bromo
     def initialize
       logger.debug("core: initialize")
       self.schedule_updater = ScheduleUpdater.new
+      self.queue_manager = QueueManager.new
     end
 
     def start_refresh_schedule
@@ -52,13 +54,26 @@ module Bromo
         while schedule_updater.first_update? || exsleep(schedule_updater.minimum_refresh_time_to_left) do
           break if !@refresh_schedule_thread_flag
           schedule_updater.update
+          queue_manager.update_queue
         end
       end
 
     end
 
-    @check_queue_thread = nil
     def start_check_queue
+      @check_queue_thread_flag = false
+      @check_queue_thread.join if @check_queue_thread
+
+      @check_queue_thread_flag = true
+
+      @check_queue_thread = Thread.new do
+
+        while exsleep(queue_manager.minimum_recording_time_to_left) do
+          break if !@check_queue_thread_flag
+          queue_manager.record
+        end
+      end
+
 
     end
 
@@ -68,6 +83,7 @@ module Bromo
     end
     def stop_check_queue
       @check_queue_thread_flag = false
+      @check_queue_thread.join if @check_queue_thread
     end
 
 

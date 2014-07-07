@@ -40,7 +40,6 @@ module Bromo
               schedule.description = prog.xpath('info').text
               schedule.from_time = time_parser(prog['ft']).to_i
               schedule.to_time = time_parser(prog['to']).to_i
-              schedule.recorded = 0
 
               schedule.finger_print = schedule.module_name + schedule.channel_name + schedule.from_time.to_s
 
