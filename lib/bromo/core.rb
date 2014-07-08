@@ -28,7 +28,9 @@ module Bromo
 
       logger.debug("stop refresh")
       core.running = false
+      logger.debug("stop refresh: schedule")
       core.stop_refresh_schedule
+      logger.debug("stop refresh: queue")
       core.stop_check_queue
 
     end
@@ -84,6 +86,7 @@ module Bromo
     def stop_check_queue
       @check_queue_thread_flag = false
       @check_queue_thread.join if @check_queue_thread
+      queue_manager.join_recording_thread
     end
 
 

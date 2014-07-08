@@ -8,6 +8,24 @@ module Bromo
       RECORDED_QUEUE = 1
       RECORDED_RECORDING = 2
       RECORDED_RECORDED = 3
+      RECORDED_FAILED = 4
+
+      attr_accessor :thread
+
+      def media
+        @media ||= QueueManager.medias.find do |m|
+          m.name == self.module_name
+        end
+      end
+
+      def record
+        Utils::Logger.logger.debug("Model.media = #{media.name}")
+        media.record(self)
+      end
+
+      def time_to_left
+        self.from_time - Time.now.to_i
+      end
 
       def save_since_finger_print_not_exist
         if !Model::Schedule.where(finger_print: self.finger_print).exists?

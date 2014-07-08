@@ -3,6 +3,9 @@ module Bromo
     class Radiko
       include Base
 
+      realtime :true
+      recording_delay_for_realtime 20
+
       def clean_db
         clear_before(:two_weeks)
       end
@@ -67,6 +70,18 @@ module Bromo
         time
       end
 
+      def record(schedule)
+        logger.debug("recroding start #{schedule.name}")
+        sleep schedule.time_to_left if schedule.time_to_left > 0
+
+        tempfile = Tempfile::new('original_data')
+
+        logger.debug("record 1")
+        if realtime? && recording_delay_for_realtime > 0
+          sleep recording_delay_for_realtime
+        end
+
+      end
 
     end
 
