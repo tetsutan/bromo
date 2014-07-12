@@ -19,7 +19,7 @@ module Bromo
 
       logger.debug("start refresh")
       core.running = true
-      core.start_refresh_schedule
+      # core.start_refresh_schedule # FIXME uncommented out
       core.start_check_queue
 
     end
@@ -68,10 +68,20 @@ module Bromo
 
       @check_queue_thread_flag = true
 
+      logger.debug("create check thread")
       @check_queue_thread = Thread.new do
+
+        logger.debug("do check thread run loop")
+
+        # FIXME REMOVEME
+        logger.debug("for DEBUG: no wait")
+          queue_manager.update_queue
+          logger.debug("for DEBUG: queue = #{queue_manager.queue}")
+          queue_manager.record
 
         while exsleep(queue_manager.minimum_recording_time_to_left) do
           break if !@check_queue_thread_flag
+          queue_manager.update_queue
           queue_manager.record
         end
       end

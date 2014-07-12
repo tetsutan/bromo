@@ -18,10 +18,16 @@ module Bromo
         end
       end
 
-      def record
+      def start_recording
         Utils::Logger.logger.debug("Model.media = #{media.name}")
-        media.record(self)
+        if media.record(self)
+          self.recorded = Model::Schedule::RECORDED_RECORDED
+        else
+          self.recorded = Model::Schedule::RECORDED_FAILED
+        end
+        self.save
       end
+
 
       def time_to_left
         self.from_time - Time.now.to_i

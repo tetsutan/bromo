@@ -71,15 +71,17 @@ module Bromo
       end
 
       def record(schedule)
-        logger.debug("recroding start #{schedule.name}")
-        sleep schedule.time_to_left if schedule.time_to_left > 0
+        logger.debug("recroding start #{schedule.title}")
+
+        # sleep schedule.time_to_left if schedule.time_to_left > 0 # TODO Uncomment
 
         tempfile = Tempfile::new('original_data')
 
-        logger.debug("record 1")
         if realtime? && recording_delay_for_realtime > 0
           sleep recording_delay_for_realtime
         end
+
+
 
       end
 

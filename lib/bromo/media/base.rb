@@ -14,21 +14,19 @@ module Bromo
 
       module Setting
         module ClassMethods
-          @@realtime = false
-          @@recording_delay_for_realtime = 0
           def realtime(val)
-            @@realtime = !!val
+            self._realtime = !!val
           end
           def recording_delay_for_realtime(val)
-            @@recording_delay_for_realtime = val
+            self._recording_delay_for_realtime = val
           end
         end
 
         def realtime?
-          @@realtime
+          _realtime
         end
         def recording_delay_for_realtime
-          @@recording_delay_for_realtime
+          _recording_delay_for_realtime
         end
       end
 
@@ -38,6 +36,7 @@ module Bromo
       include Setting
 
       included do
+        cattr_accessor :_realtime, :_recording_delay_for_realtime
         extend ClassMethods
       end
 
