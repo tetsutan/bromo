@@ -1,4 +1,5 @@
 
+require 'nokogiri'
 
 module Bromo
 
@@ -20,6 +21,7 @@ module Bromo
       logger.debug("start refresh")
       core.running = true
       # core.start_refresh_schedule # FIXME uncommented out
+
       core.start_check_queue
 
     end
@@ -98,7 +100,6 @@ module Bromo
       @check_queue_thread.join if @check_queue_thread
       queue_manager.join_recording_thread
     end
-
 
 
   end

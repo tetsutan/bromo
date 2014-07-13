@@ -17,3 +17,10 @@ require 'bromo/core'
 # DB設定ファイルの読み込み
 ActiveRecord::Base.configurations = YAML.load_file('config/database.yml')
 ActiveRecord::Base.establish_connection(:development)
+
+module Bromo
+  def self.debug(str)
+    Utils::Logger.logger.debug(str)
+  end
+end
+
