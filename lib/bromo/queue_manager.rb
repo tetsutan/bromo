@@ -1,6 +1,8 @@
 module Bromo
   class QueueManager
 
+    DEFAULT_WAIT_FOR_NEXT_RECORDING = 60*60
+
     @@medias = nil
     def self.medias
       @@medias ||= Config.broadcaster_names.map {|name|
@@ -20,8 +22,8 @@ module Bromo
     def update_queue
       Utils::Logger.logger.debug("call update_queue")
 
-      @@reservations.values.map do |res|
-        Model::Schedule.create_queue(res)
+      @@reservations.each do |key, res|
+        Model::Schedule.create_queue(key,res)
       end
 
       queue.delete_if do |q|
@@ -51,10 +53,16 @@ module Bromo
       @queue ||= Model::Schedule.queue.to_a
     end
 
-    def pop
-      queue.detect do |q|
+    def recorded_queue
+      queue.select do |q|
         q.recorded == Model::Schedule::RECORDED_QUEUE
-      end.tap do |q|
+      end.sort do |a,b|
+        a.time_to_left <=> b.time_to_left
+      end
+    end
+
+    def pop
+      recorded_queue.first.tap do |q|
         if !q.nil?
           q.recorded = Model::Schedule::RECORDED_RECORDING
           q.save
@@ -78,7 +86,7 @@ module Bromo
       return if queue.empty?
 
       Utils::Logger.logger.debug("record: queue size = #{queue.size}")
-      if queue.first.from_time - Time.now.to_i < 10
+      if recorded_queue.first.from_time - Time.now.to_i < 10
         Utils::Logger.logger.debug("create recording thread pre")
         Thread.start(pop) do |s|
           Utils::Logger.logger.debug("create recording thread in poped = #{s}")
@@ -92,15 +100,9 @@ module Bromo
     end
 
     def minimum_recording_time_to_left
-      min = queue.detect do |q|
-        q.recorded == Model::Schedule::RECORDED_QUEUE
-      end
-      Utils::Logger.logger.debug("queue_manager: min = #{min}")
-      if min
-        min.time_to_left
-      else
-        60 * 60
-      end
+      min = recorded_queue.first
+      Utils::Logger.logger.debug("queue_manager: min.time_to_left = #{min ? min.time_to_left : 0}")
+      return min ? min.time_to_left : DEFAULT_WAIT_FOR_NEXT_RECORDING
     end
 
   end

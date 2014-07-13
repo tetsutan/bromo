@@ -10,6 +10,7 @@ if Bromo::Config.check_config
 
   # debug
   sleep 20
+  Bromo.debug "Bromo::Core.stop"
   Bromo::Core.stop
 
 end

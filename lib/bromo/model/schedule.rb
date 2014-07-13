@@ -10,6 +10,8 @@ module Bromo
       RECORDED_RECORDED = 3
       RECORDED_FAILED = 4
 
+      DEFAULT_GROUP_NAME = "default"
+
       attr_accessor :thread
 
       def media
@@ -39,7 +41,8 @@ module Bromo
         end
       end
 
-      def self.create_queue(block)
+      def self.create_queue(key, block)
+        @@group_name = key || DEFAULT_GROUP_NAME
         class_eval &block
       end
 
@@ -74,6 +77,7 @@ module Bromo
       scope :reserve!, ->{
         where(recorded: RECORDED_NONE).each do |res|
           res.recorded = RECORDED_QUEUE
+          res.group_name = @@group_name if @@group_name
           res.save
         end
       }
