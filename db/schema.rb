@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140707001123) do
+ActiveRecord::Schema.define(version: 20140713074123) do
 
   create_table "module_informations", force: true do |t|
     t.string   "module_name"
@@ -32,6 +32,7 @@ ActiveRecord::Schema.define(version: 20140707001123) do
     t.string  "reserved_1"
     t.string  "reserved_2"
     t.string  "reserved_3"
+    t.string  "group_name"
   end
 
 end
