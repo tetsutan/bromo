@@ -3,18 +3,24 @@ require 'active_support/concern'
 
 module Bromo
   module Utils
-    module Exsleep
+    class Exsleep
 
-      extend ActiveSupport::Concern
+      def initialize
+        @stopped = false
+      end
 
-      included do
-        extend Exsleep
+      def stop
+        @stopped = true
       end
 
       def exsleep(time, original_sleep_only=false)
 
         return false if !Bromo::Core.running?
         return true if time < 0
+        if @stopped
+          @stopped = false
+          return true
+        end
 
         start = Time.now
         divided_sleep_time = 5
@@ -29,7 +35,7 @@ module Bromo
           end
 
           rest_time = Time.now - (start + time)
-          exsleep(div, true)
+          exsleep(rest_time, true)
 
         end
 

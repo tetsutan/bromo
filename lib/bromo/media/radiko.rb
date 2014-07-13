@@ -76,9 +76,9 @@ module Bromo
         _retry_count = 20
         _tempfile_name = "original_data"
 
-        logger.debug("recroding start #{schedule.title}")
-
-        # sleep schedule.time_to_left if schedule.time_to_left > 0 # TODO Uncomment
+        time_to_left = schedule.time_to_left
+        logger.debug("recroding start #{schedule.title}, wait = #{time_to_left}")
+        sleep time_to_left if time_to_left > 0
 
         tempfile = Tempfile::new(_tempfile_name)
         logger.debug("radiko:#{schedule.id}: record to #{tempfile.path}")
@@ -97,12 +97,14 @@ module Bromo
           return false if count > _retry_count
         end
 
-        transcode_to_mpx(tempfile.path)
+        rec_filepath = File.join(Bromo::Config.data_dir,
+                                 generate_filename(schedule.title))
+        transcode_to_mpx(tempfile.path, rec_filepath)
 
         # remove old file
         tempfile.close(true)
 
-        schedule.filepath = tempfile.path
+        schedule.file_path = tempfile.path
         return true
       end
 
@@ -148,8 +150,8 @@ module Bromo
               begin
                 res = h.post(uri.path, body, header)
               rescue Errno::ETIMEDOUT => exc
-                Radimo.debug "#{object_id} ERROR: #{exc.message}"
-                Radimo.debug "#{object_id} Can't open #{uri.path} F#{__FILE__} L#{__LINE__}"
+                Bromo.debug "#{object_id} ERROR: #{exc.message}"
+                Bromo.debug "#{object_id} Can't open #{uri.path} F#{__FILE__} L#{__LINE__}"
                 next
               end
           
@@ -248,7 +250,7 @@ module Bromo
 
                   rand_name = authtoken + rand(1000).to_s
                   # t = Time.now
-                  # filepath = File.join(::Radimo.data_dir, t.strftime("%Y%m%d_%H%M_") + authtoken)
+                  # filepath = File.join(::Bromo.data_dir, t.strftime("%Y%m%d_%H%M_") + authtoken)
           
 
                   cmd = "rtmpdump \
@@ -264,14 +266,14 @@ module Bromo
                   Bromo.debug cmd.split(" ")
                   `#{cmd}`
                   exit_code = $?
-                  Radimo.debug "#{object_id} recording done (radiko) with code = #{exit_code}"
+                  Bromo.debug "#{object_id} recording done (radiko) with code = #{exit_code}"
 
                   return exit_code.success?
                 end
               rescue => e
                 # 50X系のエラーだと思うのでリトライさせる？
-                Radimo.debug e.message
-                Radimo.debug "Cant open stream channel"
+                Bromo.debug e.message
+                Bromo.debug "Cant open stream channel"
               end
 
           
@@ -286,8 +288,8 @@ module Bromo
           if retry_cont < 10
             retry
           else
-            Radimo.debug e.message
-            Radimo.debug "retry count over 10"
+            Bromo.debug e.message
+            Bromo.debug "retry count over 10"
           end
         end
 

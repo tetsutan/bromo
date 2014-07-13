@@ -78,9 +78,7 @@ module Bromo
       return if queue.empty?
 
       Utils::Logger.logger.debug("record: queue size = #{queue.size}")
-      # TODO Switch
-      # if queue.first.from_time - Time.now.to_i < 10
-      if queue.first.from_time - Time.now.to_i < 10000000000
+      if queue.first.from_time - Time.now.to_i < 10
         Utils::Logger.logger.debug("create recording thread pre")
         Thread.start(pop) do |s|
           Utils::Logger.logger.debug("create recording thread in poped = #{s}")
@@ -94,7 +92,10 @@ module Bromo
     end
 
     def minimum_recording_time_to_left
-      min = queue.first
+      min = queue.detect do |q|
+        q.recorded == Model::Schedule::RECORDED_QUEUE
+      end
+      Utils::Logger.logger.debug("queue_manager: min = #{min}")
       if min
         min.time_to_left
       else

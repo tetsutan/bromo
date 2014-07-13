@@ -72,17 +72,16 @@ module Bromo
       end
 
       # util
-      def rec_filename
-        @rec_filename ||= Time.now.strftime("%Y%m%d_%H%M_")+title+".mp3"
+      def generate_filename(base_title)
+        Time.now.strftime("%Y%m%d_%H%M_")+shell_filepathable(base_title)+".mp3" # FIXME mp3
       end
-      def rec_filepath
-        @rec_filepath ||= File.join(Bromo::Cofnig.data_dir, rec_filename)
-      end
+      # def rec_filepath
+      #   @rec_filepath ||= File.join(Bromo::Cofnig.data_dir, rec_filename)
+      # end
 
-      def transcode_to_mpx(src_path)
+      def transcode_to_mpx(src_path, dst_path)
         begin
           file = FFMPEG::Movie.new(src_path)
-          title = shell_filepathable(self.title)
         rescue => e
           Bromo.debug e.message
           Bromo.debug "Cant open file #{src_path}"
@@ -90,10 +89,10 @@ module Bromo
         end
         begin
           Bromo.debug "call transcode"
-          file.transcode(rec_filepath)
+          file.transcode(dst_path)
         rescue
-          Radimo.debug "transcode failed"
-          FileUtils.copy(src_path, rec_filepath + ".err")
+          Bromo.debug "transcode failed"
+          FileUtils.copy(src_path, dst_path + ".err")
           return
         end
       end

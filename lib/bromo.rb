@@ -19,8 +19,15 @@ ActiveRecord::Base.configurations = YAML.load_file('config/database.yml')
 ActiveRecord::Base.establish_connection(:development)
 
 module Bromo
+  # wrappers
   def self.debug(str)
     Utils::Logger.logger.debug(str)
+  end
+  def self.debug?
+    Config.debug
+  end
+  def self.exsleep(time)
+    Utils::Exsleep.new.exsleep(time)
   end
 end
 

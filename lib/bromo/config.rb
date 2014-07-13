@@ -9,7 +9,7 @@ module Bromo
       sqlite_name: "data.sql",
       host: 'localhost', # sinatra set host
       port: '7970', # sinatra set port
-
+      debug: false,
     }
 
     def self.configure(&block)
@@ -29,9 +29,9 @@ module Bromo
       end
 
       # check dir
-      data_dir = ENV['BROMO_DATA_DIR'] || @@config[:data_dir]
-      data_dir = File.expand_path data_dir
-      FileUtils.mkdir_p(data_dir) if !File.exist?(data_dir)
+      _data_dir = ENV['BROMO_DATA_DIR'] || @@config[:data_dir]
+      FileUtils.mkdir_p(_data_dir) if !File.exist?(_data_dir)
+      self.data_dir = File.expand_path _data_dir
 
       # db
       # db = SQLite3::Database.new(File.join(data_dir, @@config[:sqlite_name]))

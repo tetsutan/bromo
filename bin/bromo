@@ -9,7 +9,7 @@ if Bromo::Config.check_config
   # Bromo::Server.run!
 
   # debug
-  sleep 5
+  sleep 20
   Bromo::Core.stop
 
 end
