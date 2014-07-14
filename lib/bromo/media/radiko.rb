@@ -155,11 +155,15 @@ module Bromo
         duration = schedule.to_time - schedule.from_time
         count = 0
         loop do
+          return false if !Bromo::Core.running?
+          return false if duration < 0
+          return false if count > _retry_count
+
           break if _record_to_path(tempfile.path, schedule.channel_name, duration)
+
           logger.debug("radiko:#{schedule.id}: retry #{count}")
           duration = schedule.to_time - Time.now.to_i # update duration
           count += 1
-          return false if count > _retry_count
         end
 
         file_name = generate_filename(schedule.title)
