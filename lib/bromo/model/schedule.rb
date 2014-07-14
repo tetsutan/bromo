@@ -23,11 +23,13 @@ module Bromo
       def start_recording
         Utils::Logger.logger.debug("Model.media = #{media.name}")
         if media.record(self)
-          self.recorded = Model::Schedule::RECORDED_RECORDED
+          self.recorded = RECORDED_RECORDED
         else
-          self.recorded = Model::Schedule::RECORDED_FAILED
+          self.recorded = RECORDED_FAILED
         end
+
         self.save
+
       end
 
 
@@ -46,8 +48,12 @@ module Bromo
         class_eval &block
       end
 
+      scope :reset_queue!, ->{
+        where(recorded: RECORDED_QUEUE).update_all(recorded: RECORDED_NONE)
+      }
+
       scope :queue, ->{
-        where(recorded: RECORDED_QUEUE)
+        where(recorded: RECORDED_QUEUE).where("from_time > ?", Time.now.to_i)
       }
 
       scope :order_by_time_to_left, -> {

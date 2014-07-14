@@ -3,6 +3,70 @@ module Bromo
     class Radiko
       include Base
 
+      ## area_id area_name
+      ## JP1 HOKKAIDO JAPAN
+      ## JP2 AOMORI JAPAN
+      ## JP3 IWATE JAPAN
+      ## JP4 MIYAGI JAPAN
+      ## JP5 AKITA JAPAN
+      ## JP6 YAMAGATA JAPAN
+      ## JP7 FUKUSHIMA JAPAN
+      ## JP8 IBARAKI JAPAN
+      ## JP9 TOCHIGI JAPAN
+      ## JP10 GUNMA JAPAN
+      ## JP11 SAITAMA JAPAN
+      ## JP12 CHIBA JAPAN
+      ## JP13 TOKYO JAPAN
+      ## JP14 KANAGAWA JAPAN
+      ## JP15 NIIGATA JAPAN
+      ## JP16 TOYAMA JAPAN
+      ## JP17 ISHIKAWA JAPAN
+      ## JP18 FUKUI JAPAN
+      ## JP19 YAMANASHI JAPAN
+      ## JP20 NAGANO JAPAN
+      ## JP21 GIFU JAPAN
+      ## JP22 SHIZUOKA JAPAN
+      ## JP23 AICHI JAPAN
+      ## JP24 MIE JAPAN
+      ## JP25 SHIGA JAPAN
+      ## JP26 KYOTO JAPAN
+      ## JP27 OSAKA JAPAN
+      ## JP28 HYOGO JAPAN
+      ## JP29 NARA JAPAN
+      ## JP30 WAKAYAMA JAPAN
+      ## JP31 TOTTORI JAPAN
+      ## JP32 SHIMANE JAPAN
+      ## JP33 OKAYAMA JAPAN
+      ## JP34 HIROSHIMA JAPAN
+      ## JP35 YAMAGUCHI JAPAN
+      ## JP36 TOKUSHIMA JAPAN
+      ## JP37 KAGAWA JAPAN
+      ## JP38 EHIME JAPAN
+      ## JP39 KOUCHI JAPAN
+      ## JP40 FUKUOKA JAPAN
+      ## JP41 SAGA JAPAN
+      ## JP42 NAGASAKI JAPAN
+      ## JP43 KUMAMOTO JAPAN
+      ## JP44 OHITA JAPAN
+      ## JP45 MIYAZAKI JAPAN
+      ## JP46 KAGOSHIMA JAPAN
+      ## JP47 OKINAWA JAPAN
+
+      ## Channel name
+      ## TBS TBS
+      ## Bunka-Housou QRR
+      ## Nippon-Housou LFR
+      ## Radio-Nikkei-1 RN1
+      ## Radio-Nikkei-2 RN2
+      ## InterFM INT
+      ## J-WAVE FMJ
+      ## IBS-Ibaraki IBS
+      ## Radio-Nippon JORF
+      ## bayfm78 BAYFM78
+      ## NACK5 NACK5
+      ## FM-Yokohama YFM
+      ## Housou-Daigaku HOUSOU-DAIGAKU
+
       realtime :true
       recording_delay_for_realtime 20
 
@@ -92,7 +156,7 @@ module Bromo
         loop do
           break if _record_to_path(tempfile.path, schedule.channel_name, duration)
           logger.debug("radiko:#{schedule.id}: retry #{count}")
-          duration = self.to_time - Time.now.to_i # update duration
+          duration = schedule.to_time - Time.now.to_i # update duration
           count += 1
           return false if count > _retry_count
         end

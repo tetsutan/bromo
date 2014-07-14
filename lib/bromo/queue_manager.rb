@@ -22,20 +22,20 @@ module Bromo
     def update_queue
       Utils::Logger.logger.debug("call update_queue")
 
+      Model::Schedule.reset_queue!
       @@reservations.each do |key, res|
         Model::Schedule.create_queue(key,res)
       end
 
       queue.delete_if do |q|
-        if q.recorded == Model::Schedule::RECORDED_RECORDING
+        if q.recorded == Model::Schedule::RECORDED_RECORDED
           if q.thread.nil?
-            Utils::Logger.logger.debug("remove thread1 = #{q.thread}")
             true
           elsif q.thread.status == false
-            Utils::Logger.logger.debug("remove thread2 = #{q.thread}")
+            Utils::Logger.logger.debug("remove thread = #{q.thread}")
             true
           elsif q.thread.status.nil?
-            Utils::Logger.logger.debug("remove thread3 = #{q.thread}")
+            Utils::Logger.logger.debug("join and remove thread = #{q.thread}")
             q.thread.join
             true
           end
@@ -49,7 +49,7 @@ module Bromo
 
     end
 
-    def queue
+    def queue # not sorted
       @queue ||= Model::Schedule.queue.to_a
     end
 
@@ -85,8 +85,8 @@ module Bromo
 
       return if queue.empty?
 
-      Utils::Logger.logger.debug("record: queue size = #{queue.size}")
-      if recorded_queue.first.from_time - Time.now.to_i < 10
+      Utils::Logger.logger.debug("record: recorded_queue size = #{recorded_queue.size}")
+      if recorded_queue.size > 0 && recorded_queue.first.from_time - Time.now.to_i < 10
         Utils::Logger.logger.debug("create recording thread pre")
         Thread.start(pop) do |s|
           Utils::Logger.logger.debug("create recording thread in poped = #{s}")
@@ -94,14 +94,18 @@ module Bromo
             s.thread = Thread.current
             Utils::Logger.logger.debug("recording thread = #{s.thread}")
             s.start_recording
+            ActiveRecord::Base.connection.close
           end
         end
       end
     end
 
     def minimum_recording_time_to_left
+      Bromo.debug("call minimum_recording_time_to_left")
       min = recorded_queue.first
+      max = recorded_queue.last
       Utils::Logger.logger.debug("queue_manager: min.title = #{min.title}, time_to_left = #{min.time_to_left}") if min
+      Utils::Logger.logger.debug("queue_manager: max.title = #{max.title}, time_to_left = #{max.time_to_left}") if max
       return min ? min.time_to_left : DEFAULT_WAIT_FOR_NEXT_RECORDING
     end
 

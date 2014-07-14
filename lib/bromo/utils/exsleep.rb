@@ -9,8 +9,9 @@ module Bromo
         @stopped = false
       end
 
-      def stop
+      def stop(flag = false)
         @stopped = true
+        @flag = flag
       end
 
       def exsleep(time, original_sleep_only=false, root = true)
@@ -19,7 +20,7 @@ module Bromo
 
         return false if !Bromo::Core.running?
         return true if time < 0
-        return false if @stopped
+        return false if @stopped && !root
 
         flag = true
 
@@ -45,7 +46,13 @@ module Bromo
 
         end
 
-        Bromo.debug("exsleep cancel") if root && !flag
+
+        if @stopped && root
+          Bromo.debug("exsleep stopped")
+          @stopped = false
+          return @flag
+        end
+
         return flag
       end
 

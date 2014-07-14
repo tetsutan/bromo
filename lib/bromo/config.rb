@@ -20,16 +20,15 @@ module Bromo
     def self.check_path
 
       # check rc
-      rc_path = ENV['BROMO_CONFIG_PATH'] || @@config[:rc_path]
-      rc_path = File.expand_path rc_path
-      if File.exist? rc_path
-        self.rc_path = rc_path
-      else
-        self.rc_path = ''
+      _rc_path = ENV['BROMO_CONFIG_PATH'] || @@config[:rc_path]
+      _rc_path = File.expand_path rc_path
+      if File.exist? _rc_path
+        self.rc_path = _rc_path
       end
 
       # check dir
       _data_dir = ENV['BROMO_DATA_DIR'] || @@config[:data_dir]
+      _data_dir = File.expand_path _data_dir
       FileUtils.mkdir_p(_data_dir) if !File.exist?(_data_dir)
       self.data_dir = File.expand_path _data_dir
 

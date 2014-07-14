@@ -1,6 +1,8 @@
 development:
   adapter: sqlite3
   database: bromo-development.sqlite
+  connection: 30
+  timeout: 10000
 production:
   adapter: sqlite3
   database: bromo-production.sqlite

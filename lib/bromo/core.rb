@@ -21,8 +21,11 @@ module Bromo
       core.running = true
       core.insert_debug_schedule if Bromo.debug?
       core.queue_manager.update_queue
-      # core.start_refresh_schedule # FIXME uncomment
+      core.start_refresh_schedule # FIXME uncomment
       core.start_check_queue
+      core.start_server
+
+      logger.debug("start loop")
 
       # main loop
       loop do
@@ -33,6 +36,7 @@ module Bromo
       logger.debug("shutdown...")
       core.stop_refresh_schedule
       core.stop_check_queue
+      core.stop_server
 
     end
 
@@ -66,7 +70,7 @@ module Bromo
           Bromo.debug("updater loop: schedule_updater.update")
           schedule_updater.update
           queue_manager.update_queue
-          queue_exsleep.stop
+          queue_exsleep.stop(true)
         end
         Bromo.debug "end schedule thread"
       end
@@ -83,8 +87,7 @@ module Bromo
       @check_queue_thread = Thread.new do
 
         Bromo.debug "start queue thread"
-        while queue_exsleep.exsleep(queue_manager.minimum_recording_time_to_left) do
-        logger.debug("core: while 2")
+        while queue_exsleep.exsleep(2) do
           break if !@check_queue_thread_flag
           logger.debug("core: while loop record")
           queue_manager.update_queue
@@ -108,36 +111,55 @@ module Bromo
       queue_manager.join_recording_thread
     end
 
+    def start_server
+      @server_thread = Thread.new do
+        Bromo::Server.run!
+      end
+    end
+
+    def stop_server
+      Bromo::Server.quit!
+      @server_thread.join if @server_thread
+    end
 
     def insert_debug_schedule
 
       now = Time.now.to_i
       logger.debug "insert_debug_schedule"
 
-      finger_print_lfr = "Bromo Test LFR Fingerprint"
-      Model::Schedule.destroy_all(finger_print: finger_print_lfr)
-      finger_print_tbs = "Bromo Test TBS Fingerprint"
-      Model::Schedule.destroy_all(finger_print: finger_print_tbs)
+      Model::Schedule.destroy_all("title like '%BromoTest%'")
 
       schedule = Model::Schedule.new
       schedule.module_name = "radiko"
       schedule.channel_name = "LFR"
-      schedule.title = "Bromo Test LFR Title"
+      schedule.title = "BromoTest"
       schedule.description = "Bromo Test Description"
       schedule.from_time = now + 10
       schedule.to_time = now + 40
-      schedule.finger_print = finger_print_lfr
+      schedule.finger_print = schedule.module_name + schedule.channel_name + schedule.from_time.to_s
       schedule.save_since_finger_print_not_exist
 
       schedule = Model::Schedule.new
       schedule.module_name = "radiko"
       schedule.channel_name = "TBS"
-      schedule.title = "Bromo Test TBS Title"
+      schedule.title = "BromoTest"
       schedule.description = "Bromo Test Description"
       schedule.from_time = now + 15
       schedule.to_time = now + 45
-      schedule.finger_print = finger_print_tbs
+      schedule.finger_print = schedule.module_name + schedule.channel_name + schedule.from_time.to_s
       schedule.save_since_finger_print_not_exist
+
+      100.times do |num|
+        schedule = Model::Schedule.new
+        schedule.module_name = "radiko"
+        schedule.channel_name = "TBS"
+        schedule.title = "BromoTest" + num.to_s
+        schedule.description = "Bromo Test Description"
+        schedule.from_time = now + 10 + num
+        schedule.to_time = schedule.from_time + 5
+        schedule.finger_print = schedule.module_name + schedule.channel_name + schedule.from_time.to_s
+        schedule.save_since_finger_print_not_exist
+      end
 
     end
 

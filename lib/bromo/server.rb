@@ -6,6 +6,8 @@ module Bromo
     set :environment, :production
     set :bind, Config.host
     set :port, Config.port
+    set :traps, false
+    set :run, false
 
   end
 end
