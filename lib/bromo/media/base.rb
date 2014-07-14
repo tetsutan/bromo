@@ -14,6 +14,11 @@ module Bromo
 
       module Setting
         module ClassMethods
+
+          def media_name
+            self.name.split("::").last.downcase
+          end
+
           def realtime(val)
             self._realtime = !!val
           end
@@ -41,7 +46,7 @@ module Bromo
       end
 
       def name
-        self.class.name.split("::").last.downcase
+        self.class.media_name
       end
 
       def refresh_time_since
