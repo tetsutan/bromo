@@ -12,11 +12,7 @@ module Bromo
       end
       def record(schedule)
         recorder = Recorder::M3u.new("http://ic-www.uniqueradio.jp/iphone/3G.m3u8", realtime?)
-        if realtime? && recording_delay_for_realtime > 0
-          if schedule.to_time - Time.now.to_i > recording_delay_for_realtime
-            sleep recording_delay_for_realtime
-          end
-        end
+        sleep_recording_delay(schedule)
         data = recorder.record(schedule.to_time + recording_extra_for_realtime)
         if data && data.size > 0
           file_name = generate_filename(schedule.title, schedule.video?)

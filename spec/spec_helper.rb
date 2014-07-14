@@ -19,6 +19,7 @@ ENV["RAILS_ENV"] ||= 'test'
 
 require 'database_cleaner'
 require 'bromo'
+require 'helper'
 ActiveRecord::Base.establish_connection(ENV['RAILS_ENV'].to_sym)
 
 RSpec.configure do |config|
@@ -82,6 +83,8 @@ RSpec.configure do |config|
     mocks.verify_partial_doubles = true
   end
 =end
+
+  config.include Helpers
 
   config.before(:suite) do
     DatabaseCleaner.strategy = :transaction

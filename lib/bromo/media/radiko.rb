@@ -148,9 +148,7 @@ module Bromo
         tempfile = Tempfile::new(_tempfile_name)
         logger.debug("radiko:#{schedule.id}: record to #{tempfile.path}")
 
-        if realtime? && recording_delay_for_realtime > 0
-          sleep recording_delay_for_realtime
-        end
+        sleep_recording_delay(schedule)
 
         duration = schedule.to_time - schedule.from_time
         count = 0
@@ -342,6 +340,7 @@ module Bromo
                 # 50X系のエラーだと思うのでリトライさせる？
                 Bromo.debug e.message
                 Bromo.debug "Cant open stream channel"
+                return false
               end
 
           
@@ -358,6 +357,7 @@ module Bromo
           else
             Bromo.debug e.message
             Bromo.debug "retry count over 10"
+            return false
           end
         end
 

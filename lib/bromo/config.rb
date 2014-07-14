@@ -6,7 +6,6 @@ module Bromo
     @@config = {
       rc_path: "~/.bromorc.rb",
       data_dir: "~/.bromo",
-      sqlite_name: "data.sql",
       host: nil, # sinatra set host
       port: '7970', # sinatra set port
       debug: false,

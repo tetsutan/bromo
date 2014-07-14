@@ -151,6 +151,14 @@ module Bromo
 
       end
 
+      def sleep_recording_delay(schedule)
+        if realtime? && recording_delay_for_realtime > 0
+          if schedule.to_time - Time.now.to_i > recording_delay_for_realtime
+            sleep recording_delay_for_realtime
+          end
+        end
+      end
+
     end
   end
 end
