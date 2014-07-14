@@ -17,7 +17,9 @@ require 'bromo/core'
 
 # DB設定ファイルの読み込み
 ActiveRecord::Base.configurations = YAML.load_file('config/database.yml')
-ActiveRecord::Base.establish_connection(:development)
+ENV["RAILS_ENV"] ||= 'production'
+Bromo::Config.debug(false) if ENV['RAILS_ENV'] == 'production'
+ActiveRecord::Base.establish_connection(ENV['RAILS_ENV'].to_sym)
 
 module Bromo
   # wrappers
