@@ -13,14 +13,15 @@ module Bromo
         @stopped = true
       end
 
-      def exsleep(time, original_sleep_only=false)
+      def exsleep(time, original_sleep_only=false, root = true)
+
+        Bromo.debug("exsleep #{time}") if root
 
         return false if !Bromo::Core.running?
         return true if time < 0
-        if @stopped
-          @stopped = false
-          return true
-        end
+        return false if @stopped
+
+        flag = true
 
         start = Time.now
         divided_sleep_time = 5
@@ -31,15 +32,21 @@ module Bromo
           div = divided_sleep_time.to_i
           loop_num = time.to_i / div
           loop_num.times do
-            break if !exsleep(div, true)
+            if !exsleep(div, true, false)
+              flag = false
+              break
+            end
           end
 
-          rest_time = Time.now - (start + time)
-          exsleep(rest_time, true)
+          if flag
+            rest_time = Time.now - (start + time)
+            flag = exsleep(rest_time, true, false)
+          end
 
         end
 
-        return true
+        Bromo.debug("exsleep cancel") if root && !flag
+        return flag
       end
 
     end

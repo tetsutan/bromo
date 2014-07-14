@@ -19,23 +19,25 @@ module Bromo
 
       logger.debug("start refresh")
       core.running = true
-      # core.start_refresh_schedule # FIXME uncomment
-
       core.insert_debug_schedule if Bromo.debug?
-
+      core.queue_manager.update_queue
+      # core.start_refresh_schedule # FIXME uncomment
       core.start_check_queue
+
+      # main loop
+      loop do
+        sleep 5
+        break if !Core.running?
+      end
+
+      logger.debug("shutdown...")
+      core.stop_refresh_schedule
+      core.stop_check_queue
 
     end
 
     def self.stop
-
-      logger.debug("stop refresh")
       core.running = false
-      logger.debug("stop refresh: schedule")
-      core.stop_refresh_schedule
-      logger.debug("stop refresh: queue")
-      core.stop_check_queue
-
     end
 
     def self.running?
@@ -58,6 +60,7 @@ module Bromo
 
       @refresh_schedule_thread = Thread.new do
 
+        Bromo.debug "start schedule thread"
         while schedule_updater.first_update? || Bromo.exsleep(schedule_updater.minimum_refresh_time_to_left) do
           break if !@refresh_schedule_thread_flag
           Bromo.debug("updater loop: schedule_updater.update")
@@ -65,6 +68,7 @@ module Bromo
           queue_manager.update_queue
           queue_exsleep.stop
         end
+        Bromo.debug "end schedule thread"
       end
 
     end
@@ -78,14 +82,15 @@ module Bromo
       logger.debug("create check thread")
       @check_queue_thread = Thread.new do
 
-        logger.debug("do check thread run loop")
-
+        Bromo.debug "start queue thread"
         while queue_exsleep.exsleep(queue_manager.minimum_recording_time_to_left) do
+        logger.debug("core: while 2")
           break if !@check_queue_thread_flag
           logger.debug("core: while loop record")
           queue_manager.update_queue
           queue_manager.record
         end
+        Bromo.debug "end queue thread"
       end
 
 
@@ -107,6 +112,7 @@ module Bromo
     def insert_debug_schedule
 
       now = Time.now.to_i
+      logger.debug "insert_debug_schedule"
 
       finger_print_lfr = "Bromo Test LFR Fingerprint"
       Model::Schedule.destroy_all(finger_print: finger_print_lfr)
@@ -133,7 +139,6 @@ module Bromo
       schedule.finger_print = finger_print_tbs
       schedule.save_since_finger_print_not_exist
 
-      queue_exsleep.stop
     end
 
   end

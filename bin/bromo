@@ -4,14 +4,13 @@ require 'bromo'
 
 require Bromo::Config.rc_path if Bromo::Config.check_path
 
+Signal.trap(:INT) do
+  puts "trap :INT"
+  Bromo::Core.stop
+end
+
+
 if Bromo::Config.check_config
   Bromo::Core.start
-  # Bromo::Server.run!
-
-  # debug
-  sleep 20
-  Bromo.debug "Bromo::Core.stop"
-  Bromo::Core.stop
-
 end
 

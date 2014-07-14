@@ -101,7 +101,7 @@ module Bromo
 
     def minimum_recording_time_to_left
       min = recorded_queue.first
-      Utils::Logger.logger.debug("queue_manager: min.time_to_left = #{min ? min.time_to_left : 0}")
+      Utils::Logger.logger.debug("queue_manager: min.title = #{min.title}, time_to_left = #{min.time_to_left}") if min
       return min ? min.time_to_left : DEFAULT_WAIT_FOR_NEXT_RECORDING
     end
 
