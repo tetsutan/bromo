@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140714111109) do
+ActiveRecord::Schema.define(version: 20140714152555) do
 
   create_table "module_informations", force: true do |t|
     t.string   "module_name"
@@ -19,7 +19,7 @@ ActiveRecord::Schema.define(version: 20140714111109) do
   end
 
   create_table "schedules", force: true do |t|
-    t.string  "module_name"
+    t.string  "media_name"
     t.string  "channel_name"
     t.string  "title"
     t.string  "description"
