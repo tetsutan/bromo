@@ -10,6 +10,9 @@ module Bromo
       RECORDED_RECORDED = 3
       RECORDED_FAILED = 4
 
+      VIDEO_FALSE = 0
+      VIDEO_TRUE = 1
+
       DEFAULT_GROUP_NAME = "default"
 
       attr_accessor :thread
@@ -50,8 +53,7 @@ module Bromo
       end
 
       def video?
-        # self.video #TODO
-        false
+        self.video == VIDEO_TRUE
       end
 
       def self.create_queue(key, block)
@@ -98,10 +100,13 @@ module Bromo
         where("from_time > ?", term[0].to_i). where("to_time < ?", term[1].to_i)
       }
 
-      scope :reserve!, ->{
+      scope :reserve!, ->(option = {}){
         where(recorded: RECORDED_NONE).each do |res|
           res.recorded = RECORDED_QUEUE
           res.group_name = @@group_name if @@group_name
+
+          res.video = VIDEO_TRUE if option[:video]
+
           res.save
         end
       }

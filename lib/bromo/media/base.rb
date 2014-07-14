@@ -33,6 +33,13 @@ module Bromo
               self._recording_delay_for_realtime = val
             end
           end
+          def recording_extra_for_realtime(val=nil)
+            if val.nil?
+              return self._recording_extra_for_realtime || 0
+            else
+              self._recording_extra_for_realtime = val
+            end
+          end
 
           def realtime?
             self._realtime
@@ -48,7 +55,7 @@ module Bromo
       include Setting
 
       included do
-        cattr_accessor :_realtime, :_recording_delay_for_realtime
+        cattr_accessor :_realtime, :_recording_delay_for_realtime, :_recording_extra_for_realtime
         extend ClassMethods
       end
 
@@ -60,6 +67,9 @@ module Bromo
       end
       def recording_delay_for_realtime
         self.class.recording_delay_for_realtime
+      end
+      def recording_extra_for_realtime
+        self.class.recording_extra_for_realtime
       end
 
       def refresh_time_since

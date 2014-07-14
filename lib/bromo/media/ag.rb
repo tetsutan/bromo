@@ -4,7 +4,8 @@ module Bromo
       include Base
 
       realtime :true
-      recording_delay_for_realtime 90
+      recording_delay_for_realtime 120
+      recording_extra_for_realtime 60 # maybe 30
 
       def update_db
         update_programs_from_url("http://ic-www.uniqueradio.jp/iphone_pg/get_program_json3.php")
@@ -12,13 +13,19 @@ module Bromo
       def record(schedule)
         recorder = Recorder::M3u.new("http://ic-www.uniqueradio.jp/iphone/3G.m3u8", realtime?)
         if realtime? && recording_delay_for_realtime > 0
-          sleep recording_delay_for_realtime
+          if schedule.to_time - Time.now.to_i > recording_delay_for_realtime
+            sleep recording_delay_for_realtime
+          end
         end
-        data = recorder.record(schedule.to_time)
-        file_name = generate_filename(schedule.title, schedule.video?)
-        save_tempfile_and_transcode_to_data_dir(data, file_name)
+        data = recorder.record(schedule.to_time + recording_extra_for_realtime)
+        if data && data.size > 0
+          file_name = generate_filename(schedule.title, schedule.video?)
+          save_tempfile_and_transcode_to_data_dir(data, file_name)
 
-        return file_name
+          return file_name
+        end
+
+        return false
       end
 
       def update_programs_from_url(url)
