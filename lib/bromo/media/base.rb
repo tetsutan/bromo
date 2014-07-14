@@ -19,20 +19,27 @@ module Bromo
             self.name.split("::").last.downcase
           end
 
-          def realtime(val)
-            self._realtime = !!val
+          def realtime(val=nil)
+            if val.nil?
+              return self._realtime
+            else
+              self._realtime = !!val
+            end
           end
-          def recording_delay_for_realtime(val)
-            self._recording_delay_for_realtime = val
+          def recording_delay_for_realtime(val=nil)
+            if val.nil?
+              return self._recording_delay_for_realtime || 0
+            else
+              self._recording_delay_for_realtime = val
+            end
           end
+
+          def realtime?
+            self._realtime
+          end
+
         end
 
-        def realtime?
-          _realtime
-        end
-        def recording_delay_for_realtime
-          _recording_delay_for_realtime
-        end
       end
 
 
@@ -48,41 +55,39 @@ module Bromo
       def name
         self.class.media_name
       end
+      def realtime?
+        self.class.realtime?
+      end
+      def recording_delay_for_realtime
+        self.class.recording_delay_for_realtime
+      end
 
       def refresh_time_since
         Utils::Date.next("500")
       end
 
-      def clear_before(key)
-        case key
-        when :two_weeks
-          # TODO create method to clear old schedule on database
-        end
+      def clear_before
+        Model::Schedule.clear_before!(name)
       end
 
       def update_schedule
-        clean_db
+        clear_before
         update_db
       end
 
       # inheritance methods
-      def clean_db
-        raise "do inherit clean_db!"
-      end
       def update_db
         raise "do inherit update_db!"
       end
-      def record(*args)
+      def record(schedule)
         raise "do inherit record!"
       end
 
       # util
-      def generate_filename(base_title)
-        Time.now.strftime("%Y%m%d_%H%M_")+shell_filepathable(base_title)+".mp3" # FIXME mp3
+      def generate_filename(base_title, video = false)
+        Time.now.strftime("%Y%m%d_%H%M_")+shell_filepathable(base_title)+
+          (video ? ".mp4": ".mp3")
       end
-      # def rec_filepath
-      #   @rec_filepath ||= File.join(Bromo::Cofnig.data_dir, rec_filename)
-      # end
 
       def transcode_to_mpx(src_path, dst_path)
         begin
@@ -108,6 +113,32 @@ module Bromo
 
       def sanitize(str)
         Nokogiri::HTML(str.to_s).text
+      end
+
+      def save_tempfile_and_transcode_to_data_dir(data, file_name)
+        # data set to tempfile
+        tempfile = Tempfile::new('bromo_originl_data')
+        tempfile.write data
+        Bromo.debug "#{object_id} tempfile path = #{tempfile.path}"
+        Bromo.debug "#{object_id} data size = #{data.size}"
+
+        # transcord to mp3
+        begin
+          file = FFMPEG::Movie.new(tempfile.path)
+          name = shell_filepathable(self.name)
+        rescue => e
+          Bromo.debug e.message
+          Bromo.debug "Cant open tempfile #{tempfile.path}"
+          return
+        end
+
+        rec_filepath = File.join(Config.data_dir, file_name)
+        file.transcode(rec_filepath)
+
+        # remove old file
+        tempfile.close(true)
+
+
       end
 
     end

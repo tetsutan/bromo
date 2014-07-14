@@ -8,6 +8,7 @@ require 'bromo/queue'
 require 'bromo/server'
 require 'bromo/queue_manager'
 require 'bromo/schedule_updater'
+require 'bromo/recorder'
 
 require 'bromo/model'
 require 'bromo/media'

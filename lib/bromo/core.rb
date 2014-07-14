@@ -19,7 +19,7 @@ module Bromo
 
       logger.debug("start refresh")
       core.running = true
-      core.insert_debug_schedule if Bromo.debug?
+      Utils::Debug.insert_debug_schedule if Bromo.debug?
       core.queue_manager.update_queue
       # core.start_refresh_schedule # FIXME uncomment
       core.start_check_queue
@@ -122,47 +122,6 @@ module Bromo
     def stop_server
       Bromo::Server.quit!
       @server_thread.join if @server_thread
-    end
-
-    def insert_debug_schedule
-
-      now = Time.now.to_i
-      logger.debug "insert_debug_schedule"
-
-      Model::Schedule.destroy_all("title like '%BromoTest%'")
-
-      schedule = Model::Schedule.new
-      schedule.module_name = "radiko"
-      schedule.channel_name = "LFR"
-      schedule.title = "BromoTest"
-      schedule.description = "Bromo Test Description"
-      schedule.from_time = now + 10
-      schedule.to_time = now + 40
-      schedule.finger_print = schedule.module_name + schedule.channel_name + schedule.from_time.to_s
-      schedule.save_since_finger_print_not_exist
-
-      schedule = Model::Schedule.new
-      schedule.module_name = "radiko"
-      schedule.channel_name = "TBS"
-      schedule.title = "BromoTest"
-      schedule.description = "Bromo Test Description"
-      schedule.from_time = now + 15
-      schedule.to_time = now + 45
-      schedule.finger_print = schedule.module_name + schedule.channel_name + schedule.from_time.to_s
-      schedule.save_since_finger_print_not_exist
-
-      # 100.times do |num|
-      #   schedule = Model::Schedule.new
-      #   schedule.module_name = "radiko"
-      #   schedule.channel_name = "TBS"
-      #   schedule.title = "BromoTest" + num.to_s
-      #   schedule.description = "Bromo Test Description"
-      #   schedule.from_time = now + 10 + num
-      #   schedule.to_time = schedule.from_time + 5
-      #   schedule.finger_print = schedule.module_name + schedule.channel_name + schedule.from_time.to_s
-      #   schedule.save_since_finger_print_not_exist
-      # end
-
     end
 
   end

@@ -21,16 +21,21 @@ module Bromo
       end
 
       def start_recording
-        Utils::Logger.logger.debug("Model.media = #{media.name}")
-        file_name =  media.record(self)
-        self.file_path = file_name
-        if file_name
-          self.recorded = RECORDED_RECORDED
-        else
+        if !media
           self.recorded = RECORDED_FAILED
+          self.save
+        else
+          file_name =  media.record(self)
+          self.file_path = file_name
+          if file_name
+            self.recorded = RECORDED_RECORDED
+          else
+            self.recorded = RECORDED_FAILED
+          end
+
+          self.save
         end
 
-        self.save
       end
 
 
@@ -42,6 +47,11 @@ module Bromo
         if !Model::Schedule.where(finger_print: self.finger_print).exists?
           save
         end
+      end
+
+      def video?
+        # self.video #TODO
+        false
       end
 
       def self.create_queue(key, block)
@@ -59,6 +69,13 @@ module Bromo
 
       scope :order_by_time_to_left, -> {
         order("from_time ASC")
+      }
+
+      scope :clear_before!, ->(module_name, time=60 * 60 * 24 * 14){
+        where(module_name: module_name).
+        where(recorded: RECORDED_RECORDED).
+        where("from_time < ?", Time.now.to_i - time). # two weeks ago
+        delete_all
       }
 
 

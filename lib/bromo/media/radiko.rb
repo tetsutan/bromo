@@ -75,10 +75,6 @@ module Bromo
       end
       self.area_id = "JP13" # default: Tokyo
 
-      def clean_db
-        clear_before(:two_weeks)
-      end
-
       def update_db
         # weekly
         now = Time.now.to_i

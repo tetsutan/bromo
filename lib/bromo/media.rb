@@ -1,4 +1,7 @@
 
 require 'bromo/media/base'
-require 'bromo/media/radiko'
+
+Dir[File.expand_path('../media', __FILE__) << '/*.rb'].each do |file|
+  require file
+end
 
