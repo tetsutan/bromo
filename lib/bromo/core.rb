@@ -22,7 +22,7 @@ module Bromo
       Utils::Debug.insert_debug_schedule if Bromo.debug?
       core.queue_manager.update_queue
       # core.start_refresh_schedule # FIXME uncomment
-      # core.start_check_queue
+      core.start_check_queue
       core.start_server
 
       logger.debug("start loop")

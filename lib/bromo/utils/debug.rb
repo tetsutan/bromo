@@ -14,7 +14,7 @@ module Bromo
       end
 
       def insert
-        # insert_radiko
+        insert_radiko
         insert_ag
       end
 
@@ -31,7 +31,7 @@ module Bromo
         schedule.title = "BromoTest Radiko LFR"
         schedule.description = "Bromo Test Description"
         schedule.from_time = now + 10
-        schedule.to_time = now + 40
+        schedule.to_time = schedule.from_time + 30
         schedule.finger_print = schedule.media_name + schedule.channel_name + schedule.from_time.to_s
         schedule.save_since_finger_print_not_exist
 
@@ -41,7 +41,7 @@ module Bromo
         schedule.title = "BromoTest Raiko TBS"
         schedule.description = "Bromo Test Description"
         schedule.from_time = now + 15
-        schedule.to_time = now + 45
+        schedule.to_time = schedule.from_time + 30
         schedule.finger_print = schedule.media_name + schedule.channel_name + schedule.from_time.to_s
         schedule.save_since_finger_print_not_exist
 
@@ -67,29 +67,29 @@ module Bromo
         schedule.title = "BromoTest Ag 1"
         schedule.description = "Bromo Test Description"
         schedule.from_time = now + 10
-        schedule.to_time = now + 40
+        schedule.to_time = schedule.from_time + 30
         schedule.finger_print = schedule.media_name + schedule.channel_name + schedule.from_time.to_s
         schedule.save_since_finger_print_not_exist
 
-        schedule = Model::Schedule.new
-        schedule.media_name = "ag"
-        schedule.channel_name = ""
-        schedule.title = "BromoTest Ag 2"
-        schedule.description = "Bromo Test Description"
-        schedule.from_time = now + 30
-        schedule.to_time = schedule.from_time + (60 * 5)
-        schedule.finger_print = schedule.media_name + schedule.channel_name + schedule.from_time.to_s
-        schedule.save_since_finger_print_not_exist
+        # schedule = Model::Schedule.new
+        # schedule.media_name = "ag"
+        # schedule.channel_name = ""
+        # schedule.title = "BromoTest Ag 2"
+        # schedule.description = "Bromo Test Description"
+        # schedule.from_time = now + 30
+        # schedule.to_time = schedule.from_time + (60 * 5)
+        # schedule.finger_print = schedule.media_name + schedule.channel_name + schedule.from_time.to_s
+        # schedule.save_since_finger_print_not_exist
 
-        schedule = Model::Schedule.new
-        schedule.media_name = "ag"
-        schedule.channel_name = ""
-        schedule.title = "BromoTest Ag 3"
-        schedule.description = "Bromo Test Description"
-        schedule.from_time = now + (60*5) - 5
-        schedule.to_time = schedule.from_time + (60 * 5)
-        schedule.finger_print = schedule.media_name + schedule.channel_name + schedule.from_time.to_s
-        schedule.save_since_finger_print_not_exist
+        # schedule = Model::Schedule.new
+        # schedule.media_name = "ag"
+        # schedule.channel_name = ""
+        # schedule.title = "BromoTest Ag 3"
+        # schedule.description = "Bromo Test Description"
+        # schedule.from_time = now + (60*5) - 5
+        # schedule.to_time = schedule.from_time + (60 * 5)
+        # schedule.finger_print = schedule.media_name + schedule.channel_name + schedule.from_time.to_s
+        # schedule.save_since_finger_print_not_exist
 
       end
     end

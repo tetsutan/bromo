@@ -5,12 +5,28 @@
 
   - if !@search_result.empty?
     #page-header
-      h1 Search Result
+      h2 Search Result
       == slim :_schedule_table_data, locals: {schedules: @search_result}
+
+
+  - if !@schedule[:recording].empty?
+    #page-header
+      h2 Recording
+      == slim :_schedule_table_data, locals: {schedules: @schedule[:recording]}
+
+  - if !@schedule[:queue].empty?
+    #page-header
+      h2 Queue
+      == slim :_schedule_table_data, locals: {schedules: @schedule[:queue]}
+
+  - if !@schedule[:failed].empty?
+    #page-header
+      h2 Failed
+      == slim :_schedule_table_data, locals: {schedules: @schedule[:failed]}
 
 
   - if !@schedule[:recorded].empty?
     #page-header
-      h1 Recorded head 5
+      h2 Recorded head 5
       == slim :_schedule_table_data, locals: {schedules: @schedule[:recorded].limit(5)}
 
