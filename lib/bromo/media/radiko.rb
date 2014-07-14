@@ -70,15 +70,19 @@ module Bromo
       realtime :true
       recording_delay_for_realtime 20
 
+      def self.area_id=(area_id)
+        @@area_id = area_id
+      end
+      self.area_id = "JP13" # default: Tokyo
+
       def clean_db
         clear_before(:two_weeks)
       end
 
       def update_db
         # weekly
-        area_id = "JP13" # default: Tokyo
         now = Time.now.to_i
-        get_station_ids_with_url("http://radiko.jp/v2/station/list/#{area_id}.xml?_=#{now}").each do |station_id|
+        get_station_ids_with_url("http://radiko.jp/v2/station/list/#{@@area_id}.xml?_=#{now}").each do |station_id|
           update_weekly_program_with_url("http://radiko.jp/v2/api/program/station/weekly?station_id=#{station_id}&_=#{now}")
         end
       end
