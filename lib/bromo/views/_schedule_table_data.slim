@@ -1,0 +1,33 @@
+
+table.table
+  tr
+    th Title
+    th Description
+    th From
+    th To
+    th Record
+    th Media
+    th Group
+  - schedules.each do |schedule|
+    tr
+      td.title = schedule.title
+      td.description = schedule.description
+      td.from_time = Time.at(schedule.from_time).strftime(TIME_FORMAT)
+      td.to_time = Time.at(schedule.to_time).strftime(TIME_FORMAT)
+
+      - case schedule.recorded
+        - when Bromo::Model::Schedule::RECORDED_RECORDED
+          td.recorded class="success" Recorded
+        - when Bromo::Model::Schedule::RECORDED_QUEUE
+          td.recorded class="warning" "Queue"
+        - when Bromo::Model::Schedule::RECORDED_RECORDING
+          td.recorded class="warning" Recording
+        - when Bromo::Model::Schedule::RECORDED_FAILED
+          td.recorded class="danger" Failed
+        - else
+          td.recorded
+
+      td.media = schedule.module_name
+      td.group
+        - if schedule.group_name
+          a href="http://#{hostname}/list/#{schedule.group_name}.xml" #{schedule.group_name}

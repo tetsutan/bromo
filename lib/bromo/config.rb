@@ -7,7 +7,7 @@ module Bromo
       rc_path: "~/.bromorc.rb",
       data_dir: "~/.bromo",
       sqlite_name: "data.sql",
-      host: 'localhost', # sinatra set host
+      host: nil, # sinatra set host
       port: '7970', # sinatra set port
       debug: false,
       podcast_title_prefix: 'Bromo: ',

@@ -1,0 +1,25 @@
+doctype html
+html
+  head
+    meta charset="utf-8"
+    title == "Bromo status"
+    link rel="stylesheet" href="bootstrap/css/bootstrap.min.css"
+
+  body
+
+    div class="navbar navbar-default" role="navigation"
+      div class="navbar-fluid"
+        div class="navbar-header"
+          Bromo
+        form method="GET" action="/status" role="search" class="navbar-form navbar-right"
+          .form-group
+            input type="text" name="q" class="form-control" value=@search_query placeholder="Search Schedules"
+          button type="submit" class="btn btn-default"
+            span class="glyphicon glyphicon-search"
+
+    == yield
+
+  script src="jquery/jquery-1.11.1.min.js"
+  script src="bootstrap/js/bootstrap.min.js"
+
+

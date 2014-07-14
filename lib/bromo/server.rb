@@ -1,5 +1,6 @@
 require 'sinatra/base'
 require 'rss'
+require 'slim'
 
 module Bromo
   class Server < Sinatra::Base
@@ -20,6 +21,19 @@ module Bromo
       def authorized?
         @auth ||=  Rack::Auth::Basic::Request.new(request.env)
         @auth.provided? && @auth.basic? && @auth.credentials && @auth.credentials == Config.basic_authentication_env
+      end
+
+      def hostname
+        return @hostname if @hostname
+
+        host = Config.host || request.host
+        port = Config.port || request.port
+        if port && port != 80
+          host = "#{host}:#{port}"
+        end
+
+        @hostname = host
+        @hostname
       end
     end
 
@@ -48,11 +62,7 @@ module Bromo
           if file_name
             file_path = File.join(Config.data_dir, file_name)
 
-            host = Config.host
-            port = Config.port
-            host = "#{host}:#{port}" if port
-
-            item.enclosure.url = "http://#{host}/data/#{file_name}"
+            item.enclosure.url = "http://#{hostname}/data/#{file_name}"
             item.enclosure.length = File.size(file_path)
             item.enclosure.type = "audio/mpeg"
           end
@@ -77,14 +87,19 @@ module Bromo
 
     get '/status'do
 
-      ret = []
-      ret << "A::.connection_handler.connection_pool_list.map(&:connection) = "
-      ret << ActiveRecord::Base.connection_handler.connection_pool_list.map(&:connection)
-      ret << "A::.connection_handler.connection_pool_list.size = "
-      ret << ActiveRecord::Base.connection_handler.connection_pool_list.size
-      ret << "A::.connection_handler.connection_pool_list.first = "
-      ret << ActiveRecord::Base.connection_handler.connection_pool_list.first
-      ret.join("<br/>\n")
+      @schedule = {}
+      @schedule[:recorded] = Model::Schedule.where(recorded: Model::Schedule::RECORDED_RECORDED)
+      @schedule[:recording] = Model::Schedule.where(recorded: Model::Schedule::RECORDED_RECORDING)
+      @schedule[:queue] = Model::Schedule.where(recorded: Model::Schedule::RECORDED_QUEUE)
+      @schedule[:failed] = Model::Schedule.where(recorded: Model::Schedule::RECORDED_FAILED)
+
+      @search_query = params[:q]
+
+      @search_result = Model::Schedule.search(@search_query)
+
+
+      slim :status
+
     end
 
 
