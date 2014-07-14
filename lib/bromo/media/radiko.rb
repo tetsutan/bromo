@@ -142,11 +142,11 @@ module Bromo
         _tempfile_name = "original_data"
 
         time_to_left = schedule.time_to_left
-        logger.debug("recroding start #{schedule.title}, wait = #{time_to_left}")
+        Bromo.debug("recroding start #{schedule.title}, wait = #{time_to_left}")
         sleep time_to_left if time_to_left > 0
 
         tempfile = Tempfile::new(_tempfile_name)
-        logger.debug("radiko:#{schedule.id}: record to #{tempfile.path}")
+        Bromo.debug("radiko:#{schedule.id}: record to #{tempfile.path}")
 
         sleep_recording_delay(schedule)
 
@@ -159,7 +159,7 @@ module Bromo
 
           break if _record_to_path(tempfile.path, schedule.channel_name, duration)
 
-          logger.debug("radiko:#{schedule.id}: retry #{count}")
+          Bromo.debug("radiko:#{schedule.id}: retry #{count}")
           duration = schedule.to_time - Time.now.to_i # update duration
           count += 1
         end

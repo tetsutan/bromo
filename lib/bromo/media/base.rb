@@ -51,7 +51,6 @@ module Bromo
 
 
       extend ActiveSupport::Concern
-      include Utils::Logger
       include Setting
 
       included do

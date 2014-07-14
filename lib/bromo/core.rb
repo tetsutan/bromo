@@ -5,7 +5,6 @@ module Bromo
 
   class Core
     # extend Concern
-    include Utils::Logger
 
     attr_accessor :running
     attr_accessor :queue_manager, :queue_exsleep
@@ -17,7 +16,7 @@ module Bromo
 
     def self.start
 
-      logger.debug("start refresh")
+      Bromo.debug("start refresh")
       core.running = true
       Utils::Debug.insert_debug_schedule if Bromo.debug?
       core.queue_manager.update_queue
@@ -25,7 +24,7 @@ module Bromo
       core.start_check_queue
       core.start_server
 
-      logger.debug("start loop")
+      Bromo.debug("start loop")
 
       # main loop
       loop do
@@ -33,7 +32,7 @@ module Bromo
         break if !Core.running?
       end
 
-      logger.debug("shutdown...")
+      Bromo.debug("shutdown...")
       core.stop_refresh_schedule
       core.stop_check_queue
       core.stop_server
@@ -49,7 +48,7 @@ module Bromo
     end
 
     def initialize
-      logger.debug("core: initialize")
+      Bromo.debug("core: initialize")
       self.schedule_updater = ScheduleUpdater.new
       self.schedule_exsleep = Utils::Exsleep.new
       self.queue_manager = QueueManager.new
@@ -83,13 +82,13 @@ module Bromo
 
       @check_queue_thread_flag = true
 
-      logger.debug("create check thread")
+      Bromo.debug("create check thread")
       @check_queue_thread = Thread.new do
 
         Bromo.debug "start queue thread"
         while queue_exsleep.exsleep(queue_manager.minimum_recording_time_to_left) do
           break if !@check_queue_thread_flag
-          logger.debug("core: while loop record")
+          Bromo.debug("core: while loop record")
           queue_manager.update_queue
           queue_manager.record
         end
