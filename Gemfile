@@ -10,6 +10,7 @@ gem 'streamio-ffmpeg'
 
 
 gem 'sinatra'
+gem 'slim'
 
 # active record
 gem 'activesupport', :require => 'active_support/all'
