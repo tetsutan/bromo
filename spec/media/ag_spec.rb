@@ -1,14 +1,13 @@
 
-describe Bromo::Media::Radiko do
+describe Bromo::Media::Ag do
 
   before :each do
     cheat_bromo_core
 
-    @radiko = Bromo::Media::Radiko.new
+    @ag = Bromo::Media::Ag.new
 
     @schedule = Bromo::Model::Schedule.new
-    @schedule.media_name = "radiko"
-    @schedule.channel_name = "LFR"
+    @schedule.media_name = "ag"
     @schedule.title = "#{@schedule.media_name} Title"
     @schedule.description = "#{@schedule.media_name} Description"
 
@@ -19,7 +18,7 @@ describe Bromo::Media::Radiko do
   end
 
   it 'can record' do
-    file_name = @radiko.record(@schedule)
+    file_name = @ag.record(@schedule)
     expect(file_name).to be_truthy
 
     file = File.join(Bromo::Config.data_dir, file_name)

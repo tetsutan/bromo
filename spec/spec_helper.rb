@@ -22,6 +22,9 @@ require 'bromo'
 require 'helper'
 ActiveRecord::Base.establish_connection(ENV['RAILS_ENV'].to_sym)
 
+require Bromo::Config.rc_path if Bromo::Config.check_path
+Bromo::Config.check_config
+
 RSpec.configure do |config|
 # The settings below are suggested to provide a good initial experience
 # with RSpec, but feel free to customize to your heart's content.
