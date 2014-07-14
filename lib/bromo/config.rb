@@ -10,6 +10,8 @@ module Bromo
       host: 'localhost', # sinatra set host
       port: '7970', # sinatra set port
       debug: false,
+      podcast_title_prefix: 'Bromo: ',
+      podcast_link: nil, # same as host if nil
     }
 
     def self.configure(&block)
@@ -31,9 +33,6 @@ module Bromo
       _data_dir = File.expand_path _data_dir
       FileUtils.mkdir_p(_data_dir) if !File.exist?(_data_dir)
       self.data_dir = File.expand_path _data_dir
-
-      # db
-      # db = SQLite3::Database.new(File.join(data_dir, @@config[:sqlite_name]))
 
       true
     end
@@ -73,6 +72,10 @@ module Bromo
         raise "No config key of #{method}" unless @@config.keys.include?(method)
         @@config[method]
       end
+    end
+
+    def self.basic_authentication_env
+      [ENV['BASIC_AUTH_USERNAME'], ENV['BASIC_AUTH_PASSWORD']]
     end
 
   end

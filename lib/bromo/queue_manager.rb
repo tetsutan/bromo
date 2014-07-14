@@ -89,7 +89,7 @@ module Bromo
       if recorded_queue.size > 0 && recorded_queue.first.from_time - Time.now.to_i < 10
         Utils::Logger.logger.debug("create recording thread pre")
         Thread.start(pop) do |s|
-          Utils::Logger.logger.debug("create recording thread in poped = #{s}")
+          Utils::Logger.logger.debug("create recording thread in poped s.id = #{s.id}")
           if !s.nil?
             s.thread = Thread.current
             Utils::Logger.logger.debug("recording thread = #{s.thread}")

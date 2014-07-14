@@ -22,14 +22,15 @@ module Bromo
 
       def start_recording
         Utils::Logger.logger.debug("Model.media = #{media.name}")
-        if media.record(self)
+        file_name =  media.record(self)
+        self.file_path = file_name
+        if file_name
           self.recorded = RECORDED_RECORDED
         else
           self.recorded = RECORDED_FAILED
         end
 
         self.save
-
       end
 
 
@@ -88,6 +89,10 @@ module Bromo
         end
       }
 
+      # use in server
+      scope :recorded_by_group, ->(group_name) {
+        where(group_name: group_name).where(recorded: RECORDED_RECORDED).order("to_time DESC")
+      }
 
     end
   end

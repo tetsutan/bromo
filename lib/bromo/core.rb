@@ -21,7 +21,7 @@ module Bromo
       core.running = true
       core.insert_debug_schedule if Bromo.debug?
       core.queue_manager.update_queue
-      core.start_refresh_schedule # FIXME uncomment
+      # core.start_refresh_schedule # FIXME uncomment
       core.start_check_queue
       core.start_server
 
@@ -29,7 +29,7 @@ module Bromo
 
       # main loop
       loop do
-        sleep 5
+        sleep Bromo.debug? ? 1 : 5
         break if !Core.running?
       end
 
@@ -87,7 +87,7 @@ module Bromo
       @check_queue_thread = Thread.new do
 
         Bromo.debug "start queue thread"
-        while queue_exsleep.exsleep(2) do
+        while queue_exsleep.exsleep(queue_manager.minimum_recording_time_to_left) do
           break if !@check_queue_thread_flag
           logger.debug("core: while loop record")
           queue_manager.update_queue
@@ -113,6 +113,8 @@ module Bromo
 
     def start_server
       @server_thread = Thread.new do
+        Bromo::Server.set :bind, Config.host
+        Bromo::Server.set :port, Config.port
         Bromo::Server.run!
       end
     end
@@ -149,17 +151,17 @@ module Bromo
       schedule.finger_print = schedule.module_name + schedule.channel_name + schedule.from_time.to_s
       schedule.save_since_finger_print_not_exist
 
-      100.times do |num|
-        schedule = Model::Schedule.new
-        schedule.module_name = "radiko"
-        schedule.channel_name = "TBS"
-        schedule.title = "BromoTest" + num.to_s
-        schedule.description = "Bromo Test Description"
-        schedule.from_time = now + 10 + num
-        schedule.to_time = schedule.from_time + 5
-        schedule.finger_print = schedule.module_name + schedule.channel_name + schedule.from_time.to_s
-        schedule.save_since_finger_print_not_exist
-      end
+      # 100.times do |num|
+      #   schedule = Model::Schedule.new
+      #   schedule.module_name = "radiko"
+      #   schedule.channel_name = "TBS"
+      #   schedule.title = "BromoTest" + num.to_s
+      #   schedule.description = "Bromo Test Description"
+      #   schedule.from_time = now + 10 + num
+      #   schedule.to_time = schedule.from_time + 5
+      #   schedule.finger_print = schedule.module_name + schedule.channel_name + schedule.from_time.to_s
+      #   schedule.save_since_finger_print_not_exist
+      # end
 
     end
 

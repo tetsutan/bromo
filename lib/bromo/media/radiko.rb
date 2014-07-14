@@ -134,6 +134,7 @@ module Bromo
         time
       end
 
+      # must return filename
       def record(schedule)
 
         # internal setting
@@ -161,15 +162,14 @@ module Bromo
           return false if count > _retry_count
         end
 
-        rec_filepath = File.join(Bromo::Config.data_dir,
-                                 generate_filename(schedule.title))
+        file_name = generate_filename(schedule.title)
+        rec_filepath = File.join(Bromo::Config.data_dir, file_name)
         transcode_to_mpx(tempfile.path, rec_filepath)
 
         # remove old file
         tempfile.close(true)
 
-        schedule.file_path = tempfile.path
-        return true
+        return file_name
       end
 
       def _record_to_path(filepath, channel,duration)
