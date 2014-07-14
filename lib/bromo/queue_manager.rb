@@ -5,7 +5,7 @@ module Bromo
 
     @@medias = nil
     def self.medias
-      @@medias ||= Config.broadcaster_names.map {|name|
+      @@medias ||= Config.media_names.map {|name|
         Bromo::Media.const_get(name.capitalize).new
       }
     end

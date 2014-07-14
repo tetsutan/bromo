@@ -41,22 +41,22 @@ module Bromo
       true
     end
 
-    @@broadcaster_names = []
-    def self.use(broadcaster_name)
-      broadcaster_name = broadcaster_name.to_s
+    @@media_names = []
+    def self.use(media_name)
+      media_name = media_name.to_s
 
-      if(broadcaster_name == 'all')
+      if(media_name == 'all')
         const = Media.constants.dup
         const.delete(:Base)
-        @@broadcaster_names = const.map(&:downcase)
+        @@media_names = const.map(&:downcase)
       else
-        @@broadcaster_names.push broadcaster_name
+        @@media_names.push media_name
       end
 
-      @@broadcaster_names.uniq!
+      @@media_names.uniq!
     end
-    def self.broadcaster_names
-      @@broadcaster_names
+    def self.media_names
+      @@media_names
     end
 
 

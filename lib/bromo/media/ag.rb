@@ -57,7 +57,7 @@ module Bromo
 
                 # Model::Schedule.
                 schedule = Model::Schedule.new
-                schedule.module_name = self.name
+                schedule.media_name = self.name
                 schedule.channel_name = ""
                 schedule.title = prog['title']
                 schedule.description = prog['personality'] + prog['detail']
@@ -69,7 +69,7 @@ module Bromo
                 schedule.from_time = from_to[0].to_i
                 schedule.to_time = from_to[1].to_i
 
-                schedule.finger_print = schedule.module_name + schedule.from_time.to_s
+                schedule.finger_print = schedule.media_name + schedule.from_time.to_s
 
                 schedule.save_since_finger_print_not_exist
 

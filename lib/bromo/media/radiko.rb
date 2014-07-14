@@ -101,14 +101,14 @@ module Bromo
 
               # Model::Schedule.
               schedule = Model::Schedule.new
-              schedule.module_name = self.name
+              schedule.media_name = self.name
               schedule.channel_name = ch_id
               schedule.title = prog.xpath('title').text
               schedule.description = prog.xpath('info').text
               schedule.from_time = time_parser(prog['ft']).to_i
               schedule.to_time = time_parser(prog['to']).to_i
 
-              schedule.finger_print = schedule.module_name + schedule.channel_name + schedule.from_time.to_s
+              schedule.finger_print = schedule.media_name + schedule.channel_name + schedule.from_time.to_s
 
               schedule.save_since_finger_print_not_exist
 

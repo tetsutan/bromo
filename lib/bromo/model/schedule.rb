@@ -19,7 +19,7 @@ module Bromo
 
       def media
         @media ||= QueueManager.medias.find do |m|
-          m.name == self.module_name
+          m.name == self.media_name
         end
       end
 
@@ -73,8 +73,8 @@ module Bromo
         order("from_time ASC")
       }
 
-      scope :clear_before!, ->(module_name, time=60 * 60 * 24 * 14){
-        where(module_name: module_name).
+      scope :clear_before!, ->(media_name, time=60 * 60 * 24 * 14){
+        where(media_name: media_name).
         where(recorded: RECORDED_RECORDED).
         where("from_time < ?", Time.now.to_i - time). # two weeks ago
         delete_all
@@ -82,8 +82,8 @@ module Bromo
 
 
       # use in .bromrc.rb
-      scope :broadcaster, ->(name) {
-        where(module_name: name)
+      scope :media, ->(name) {
+        where(media_name: name)
       }
       scope :channel, ->(name){
         where(channel_name: name)
