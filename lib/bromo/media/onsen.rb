@@ -75,8 +75,6 @@ module Bromo
             # image_path = prog.xpath('imagePath').text
             # program.image_url = "http://www.onsen.ag/#{image_path}" if image_path
 
-            schedule.save_since_finger_print_not_exist
-
             # if Model::Schedule.where(finger_print: schedule.finger_print).empty?
             #   # 予約済みでなければ from_timeを 60sec後に設定
             #   schedule.from_time = now + 60

@@ -130,7 +130,7 @@ module Bromo
     get '/status'do
 
       @search_query = params[:q]
-      @search_query = nil
+      @search_result = nil
       if @search_query
         @search_result = Model::Schedule.search(@search_query).from_time_desc
       end
