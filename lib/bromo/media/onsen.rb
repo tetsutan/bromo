@@ -67,10 +67,8 @@ module Bromo
 
             schedule.finger_print = schedule.media_name + schedule.description
 
-            if Model::Schedule.where(finger_print: schedule.finger_print).empty?
-              schedule.from_time = now + 60
-              schedule.save_since_finger_print_not_exist
-            end
+            schedule.from_time = now + 60
+            schedule.save_since_finger_print_not_exist
 
             # image_path = prog.xpath('imagePath').text
             # program.image_url = "http://www.onsen.ag/#{image_path}" if image_path
