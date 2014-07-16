@@ -7,6 +7,8 @@ module Bromo
 
       belongs_to :group
 
+      before_save :create_search_text
+
       RECORDED_NONE = 0
       RECORDED_QUEUE = 1
       RECORDED_RECORDING = 2
@@ -64,6 +66,11 @@ module Bromo
         class_eval &block
       end
 
+      def create_search_text
+        self.search_text = Utils.normalize_search_text("#{self.title} #{self.description}")
+      end
+
+
       scope :reset_queue!, ->{
         where(recorded: RECORDED_QUEUE).update_all(recorded: RECORDED_NONE)
       }
@@ -92,7 +99,7 @@ module Bromo
         where(channel_name: name)
       }
       scope :search, ->(key){
-        where("(title like '%#{key}%' OR description like '%#{key}%')")
+        where("search_text like ?", "%#{Utils.normalize_search_text(key)}%")
       }
 
       DAYS = %w/sunday monday tuesday wednesday thursday friday saturday/

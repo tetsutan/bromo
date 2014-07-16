@@ -94,7 +94,7 @@ module Bromo
 
       # util
       def generate_filename(base_title, video = false)
-        Time.now.strftime("%Y%m%d_%H%M_")+shell_filepathable(base_title)+
+        Time.now.strftime("%Y%m%d_%H%M_")+Utils.shell_filepathable(base_title)+
           (video ? ".mp4": ".mp3")
       end
 
@@ -116,14 +116,6 @@ module Bromo
         end
       end
 
-      def shell_filepathable(str)
-        str.gsub(/[ \/\\\"\']/,'')
-      end
-
-      def sanitize(str)
-        Nokogiri::HTML(str.to_s).text
-      end
-
       def save_tempfile_and_transcode_to_data_dir(data, file_name)
         # data set to tempfile
         tempfile = Tempfile::new('bromo_originl_data')
@@ -134,7 +126,7 @@ module Bromo
         # transcord to mp3
         begin
           file = FFMPEG::Movie.new(tempfile.path)
-          name = shell_filepathable(self.name)
+          name = Utils.shell_filepathable(self.name)
         rescue => e
           Bromo.debug e.message
           Bromo.debug "Cant open tempfile #{tempfile.path}"

@@ -47,9 +47,9 @@ module Bromo
                 next if prog['title'].include?('放送休止')
 
                 # jsonにタグが入っているので取り除く
-                prog['title'] = sanitize(prog['title'])
-                prog['personality'] = sanitize(prog['personality'])
-                prog['detail'] = sanitize(prog['detail'])
+                prog['title'] = Utils.sanitize(prog['title'])
+                prog['personality'] = Utils.sanitize(prog['personality'])
+                prog['detail'] = Utils.sanitize(prog['detail'])
 
                 # Model::Schedule.
                 schedule = Model::Schedule.new

@@ -12,6 +12,9 @@ gem 'streamio-ffmpeg'
 gem 'sinatra'
 gem 'slim'
 
+# text normalization
+gem 'unf'
+
 # active record
 gem 'activesupport', :require => 'active_support/all'
 gem 'activerecord'

@@ -37,12 +37,8 @@ module Bromo
         @hostname
       end
 
-      def shell_filepathable(str)
-        str.gsub(/[ \/\\\"\']/,'')
-      end
-
       def check_filepath(file_name, dir)
-        name, ext = shell_filepathable(file_name).split(".")
+        name, ext = Utils.shell_filepathable(file_name).split(".")
         path = File.join(dir, "#{name}.#{ext}")
 
         path_base = File.dirname(File.expand_path(path))

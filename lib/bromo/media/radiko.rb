@@ -103,8 +103,8 @@ module Bromo
               schedule = Model::Schedule.new
               schedule.media_name = self.name
               schedule.channel_name = ch_id
-              schedule.title = prog.xpath('title').text
-              schedule.description = prog.xpath('info').text
+              schedule.title = Utils.sanitize(prog.xpath('title').text)
+              schedule.description = Utils.sanitize(prog.xpath('info').text)
               schedule.from_time = time_parser(prog['ft']).to_i
               schedule.to_time = time_parser(prog['to']).to_i
 

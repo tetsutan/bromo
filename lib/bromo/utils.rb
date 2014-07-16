@@ -4,6 +4,8 @@ require 'bromo/utils/exsleep'
 require 'bromo/utils/date'
 require 'bromo/utils/debug'
 
+require 'unf'
+
 module Bromo
   module Utils
     def self.save_image(url)
@@ -26,6 +28,21 @@ module Bromo
         return file_name
       end
     end
+
+    @@norm = UNF::Normalizer.new
+    def self.normalize_search_text(text)
+      @@norm.normalize(text,:nfkc)
+    end
+
+    def self.shell_filepathable(str)
+      str.gsub(/[ \/\\\"\']/,'')
+    end
+
+    def self.sanitize(str)
+      Nokogiri::HTML(str.to_s).text
+    end
+
+
   end
 end
 

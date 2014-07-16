@@ -62,6 +62,9 @@ GEM
     tilt (1.4.1)
     tzinfo (1.2.1)
       thread_safe (~> 0.1)
+    unf (0.1.4)
+      unf_ext
+    unf_ext (0.0.6)
 
 PLATFORMS
   ruby
@@ -79,3 +82,4 @@ DEPENDENCIES
   sqlite3
   streamio-ffmpeg
   swf_ruby
+  unf
