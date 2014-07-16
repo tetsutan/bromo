@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140716114747) do
+ActiveRecord::Schema.define(version: 20140716174732) do
 
   create_table "groups", force: true do |t|
     t.string "name"
@@ -39,6 +39,7 @@ ActiveRecord::Schema.define(version: 20140716114747) do
     t.string  "reserved_3"
     t.integer "video"
     t.integer "group_id"
+    t.string  "search_text"
   end
 
 end
