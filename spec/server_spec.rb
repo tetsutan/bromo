@@ -64,11 +64,10 @@ describe Bromo::Server do
       schedule.file_path = "test.mp3"
       schedule.save
 
-      group_name = schedule.group.name
+      group = schedule.group
+      expect(Bromo::Model::Schedule.recorded_by_group(group).size).to eq(1)
 
-      expect(Bromo::Model::Schedule.recorded_by_group(group_name).size).to eq(1)
-
-      get "/list/#{group_name}.xml"
+      get "/list/#{group.name}.xml"
       expect(last_response).to be_ok
 
       doc = Nokogiri::XML(last_response.body)

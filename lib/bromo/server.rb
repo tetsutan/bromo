@@ -64,8 +64,10 @@ module Bromo
         maker.channel.link = Config.podcast_link || Config.host || "www.example.com"
         maker.channel.description = maker.channel.title
 
-        path = check_filepath(group.image_path, Config.image_dir)
-        maker.channel.itunes_image = RSS::ITunesChannelModel::ITunesImage.new(path)
+        if group.image_path
+          path = check_filepath(group.image_path, Config.image_dir)
+          maker.channel.itunes_image = RSS::ITunesChannelModel::ITunesImage.new(path)
+        end
 
         maker.items.do_sort = true
 
