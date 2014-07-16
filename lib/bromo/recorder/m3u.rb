@@ -17,7 +17,7 @@ module Bromo
         self.downloaded_inf_ids = []
       end
 
-      def record(to_time)
+      def record(to_time=0)
 
         target_duration = 9
         ts_set = Set.new
