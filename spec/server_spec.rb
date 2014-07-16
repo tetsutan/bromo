@@ -15,6 +15,9 @@ describe Bromo::Server do
   end
 
   def new_schedule_template
+
+    group = Bromo::Model::Group.find_or_create_by(name: "debug")
+
     schedule = Bromo::Model::Schedule.new
     schedule.media_name = "radiko"
     schedule.channel_name = "LFR"
@@ -24,7 +27,7 @@ describe Bromo::Server do
     schedule.from_time = Time.now.to_i + 5
     schedule.to_time = schedule.from_time + 10
 
-    schedule.group_name = "debug"
+    schedule.group = group
     schedule
   end
 
@@ -44,6 +47,9 @@ describe Bromo::Server do
   describe "/list/*" do
 
     it "without data" do
+
+      new_schedule_template # but not save
+
       get '/list/debug.xml'
       expect(last_response).to be_ok
 
@@ -58,7 +64,7 @@ describe Bromo::Server do
       schedule.file_path = "test.mp3"
       schedule.save
 
-      group_name = schedule.group_name
+      group_name = schedule.group.name
 
       expect(Bromo::Model::Schedule.recorded_by_group(group_name).size).to eq(1)
 

@@ -5,6 +5,8 @@ module Bromo
   module Model
     class Schedule < ActiveRecord::Base
 
+      belongs_to :group
+
       RECORDED_NONE = 0
       RECORDED_QUEUE = 1
       RECORDED_RECORDING = 2
@@ -104,40 +106,36 @@ module Bromo
       scope :reserve!, ->(option = {}){
         where(recorded: RECORDED_NONE).each do |res|
           res.recorded = RECORDED_QUEUE
-          res.group_name = @@group_name if @@group_name
+          if @@group_name
+            res.group = Group.find_or_create_by(name: @@group_name)
+          end
 
           res.video = VIDEO_TRUE if option[:video]
 
           if option[:image]
             image = option[:image]
             image_url = image.is_a?(Proc) ? image.call : image.to_s
-            if image_url.start_with?('http')
-              # binary
-              ext = image_url.split(".").last
-              name = Digest::SHA1.hexdigest(image_url)
-              file_name = "#{name}.#{ext}"
-              file_path = File.join(Config.data_dir, "image", file_name)
-
-              if !File.exist?(file_path)
-                open(image_url) do |f_image|
-                  open(File.join(Config.data_dir, "image", file_name), "w") do |f_dest|
-                    f_dest.write(f_image.read)
-                  end
-                end
-              end
-
-              res.image_path = file_name
-            end
+            res.image_path = Bromo::Utils.save_image(image_url)
           end
-
 
           res.save
         end
       }
 
+      def self.image!(url=nil, &block)
+        image_url = block_given? ? block.call : url
+        if image_url && @@group_name
+          Group.find_or_create_by(name: @@group_name).tap do |group|
+            group.image_path = Bromo::Utils.save_image(image_url)
+            group.save
+          end
+        end
+      end
+
+
       # use in server
-      scope :recorded_by_group, ->(group_name) {
-        where(group_name: group_name).where(recorded: RECORDED_RECORDED).order("to_time DESC")
+      scope :recorded_by_group, ->(group) {
+        where(group: group).where(recorded: RECORDED_RECORDED).order("to_time DESC")
       }
 
     end

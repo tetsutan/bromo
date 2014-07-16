@@ -5,7 +5,8 @@ module Bromo
 
     @@config = {
       rc_path: "~/.bromorc.rb",
-      data_dir: "~/.bromo",
+      data_dir: "~/.bromo/data",
+      image_dir: "~/.bromo/image",
       host: nil, # sinatra set host
       port: '7970', # sinatra set port
       debug: false,
@@ -28,11 +29,15 @@ module Bromo
       end
 
       # check dir
-      _data_dir = ENV['BROMO_DATA_DIR'] || @@config[:data_dir]
+      _data_dir = @@config[:data_dir]
       _data_dir = File.expand_path _data_dir
       FileUtils.mkdir_p(_data_dir) if !File.exist?(_data_dir)
-      FileUtils.mkdir_p(File.join(_data_dir, "image"))
-      self.data_dir = File.expand_path _data_dir
+      self.data_dir = _data_dir
+
+      _image_dir = @@config[:image_dir]
+      _image_dir = File.expand_path _image_dir
+      FileUtils.mkdir_p(_image_dir) if !File.exist?(_image_dir)
+      self.image_dir = _image_dir
 
       true
     end

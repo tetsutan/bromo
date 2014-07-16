@@ -29,5 +29,10 @@ table.table
 
       td.media = schedule.media_name
       td.group
-        - if schedule.group_name
-          a href="http://#{hostname}/list/#{schedule.group_name}.xml" #{schedule.group_name}
+        - if schedule.group
+          - group = schedule.group
+          - if group.image_path
+            a href="http://#{hostname}/list/#{group.name}.xml"
+              img src="http://#{hostname}/image/#{group.image_path}" alt="#{group.name}"
+          - elsif group.name
+            a href="http://#{hostname}/list/#{group.name}.xml" #{group.name}

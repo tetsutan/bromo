@@ -41,13 +41,13 @@ module Bromo
         str.gsub(/[ \/\\\"\']/,'')
       end
 
-      def check_filepath(str)
+      def check_filepath(file_name, dir)
         name, ext = shell_filepathable(file_name).split(".")
-        path = File.join(Config.data_dir, "#{name}.#{ext}")
+        path = File.join(dir, "#{name}.#{ext}")
 
-        path_base = File.basename(File.expand_path(path))
+        path_base = File.dirname(File.expand_path(path))
 
-        if path_base.start_with?(Config.data_dir)
+        if path_base.start_with?(dir)
           return path
         else
           return nil
@@ -59,12 +59,18 @@ module Bromo
     get '/list/*.xml' do |group_name|
       protected!
 
-      schedules = Model::Schedule.recorded_by_group(group_name)
+      group = Model::Group.find_by(name: group_name)
+      return 404 if !group
+      schedules = Model::Schedule.recorded_by_group(group)
 
       rss = RSS::Maker.make("2.0") do |maker|
         maker.channel.title = Config.podcast_title_prefix + group_name
         maker.channel.link = Config.podcast_link || Config.host || "www.example.com"
         maker.channel.description = maker.channel.title
+
+        path = check_filepath(group.image_path, Config.image_dir)
+        maker.channel.itunes_image = RSS::ITunesChannelModel::ITunesImage.new(path)
+
         maker.items.do_sort = true
 
         if !schedules.empty?
@@ -105,7 +111,18 @@ module Bromo
     get '/data/*' do |file_name|
       protected!
 
-      path = check_filepath(file_name)
+      path = check_filepath(file_name, Config.data_dir)
+
+      return unless path && File.file?(path)
+
+      env['sinatra.static_file'] = path
+      cache_control(*settings.static_cache_control) if settings.static_cache_control?
+      send_file path, :disposition => nil
+    end
+    get '/image/*' do |file_name|
+      protected!
+
+      path = check_filepath(file_name, Config.image_dir)
 
       return unless path && File.file?(path)
 
