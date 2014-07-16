@@ -3,7 +3,7 @@
 
 #container
 
-  - if !@search_result.empty?
+  - if @search_result && !@search_result.empty?
     #page-header
       h2 Search Result
       == slim :_schedule_table_data, locals: {schedules: @search_result}
