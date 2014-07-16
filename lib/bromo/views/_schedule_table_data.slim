@@ -13,7 +13,7 @@ table.table
       td.title = schedule.title
       td.description = schedule.description
       td.from_time = Time.at(schedule.from_time).strftime(TIME_FORMAT)
-      td.to_time = Time.at(schedule.to_time).strftime(TIME_FORMAT)
+      td.to_time = schedule.to_time == 0 ? "" : Time.at(schedule.to_time).strftime(TIME_FORMAT)
 
       - case schedule.recorded
         - when Bromo::Model::Schedule::RECORDED_RECORDED
