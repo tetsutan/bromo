@@ -129,15 +129,8 @@ module Bromo
 
     get '/status'do
 
-      @schedule = {}
-      @schedule[:recorded] = Model::Schedule.where(recorded: Model::Schedule::RECORDED_RECORDED).order("from_time DESC")
-      @schedule[:recording] = Model::Schedule.where(recorded: Model::Schedule::RECORDED_RECORDING).order("from_time DESC")
-      @schedule[:queue] = Model::Schedule.where(recorded: Model::Schedule::RECORDED_QUEUE).order("from_time DESC")
-      @schedule[:failed] = Model::Schedule.where(recorded: Model::Schedule::RECORDED_FAILED).order("from_time DESC")
-
       @search_query = params[:q]
-
-      @search_result = Model::Schedule.search(@search_query).order("from_time DESC")
+      @search_result = Model::Schedule.search(@search_query).from_time_desc
 
       slim :status
 

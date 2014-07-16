@@ -139,10 +139,28 @@ module Bromo
         end
       end
 
-
       # use in server
       scope :recorded_by_group, ->(group) {
         where(group: group).where(recorded: RECORDED_RECORDED).order("to_time DESC")
+      }
+      scope :recorded, ->{
+        where(recorded: RECORDED_RECORDED)
+      }
+      scope :recording, ->{
+        where(recorded: RECORDED_RECORDING)
+      }
+      scope :queue, ->{
+        where(recorded: RECORDED_QUEUE)
+      }
+      scope :failed, ->{
+        where(recorded: RECORDED_FAILED)
+      }
+      scope :now_on_air, ->{
+        where("from_time < ?", Time.now.to_i).
+        where("to_time > ?", Time.now.to_i)
+      }
+      scope :from_time_desc, ->{
+        order("from_time DESC")
       }
 
     end

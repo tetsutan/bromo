@@ -8,25 +8,34 @@
       h2 Search Result
       == slim :_schedule_table_data, locals: {schedules: @search_result}
 
-
-  - if !@schedule[:recording].empty?
+  - schedules = Bromo::Model::Schedule.recording.from_time_desc
+  - if !schedules.empty?
     #page-header
       h2 Recording
-      == slim :_schedule_table_data, locals: {schedules: @schedule[:recording]}
+      == slim :_schedule_table_data, locals: {schedules: schedules}
 
-  - if !@schedule[:queue].empty?
+  - schedules = Bromo::Model::Schedule.queue.from_time_desc
+  - if !schedules.empty?
     #page-header
       h2 Queue
-      == slim :_schedule_table_data, locals: {schedules: @schedule[:queue]}
+      == slim :_schedule_table_data, locals: {schedules: schedules}
 
-  - if !@schedule[:failed].empty?
+  - schedules = Bromo::Model::Schedule.failed.from_time_desc
+  - if !schedules.empty?
     #page-header
       h2 Failed
-      == slim :_schedule_table_data, locals: {schedules: @schedule[:failed]}
+      == slim :_schedule_table_data, locals: {schedules: schedules}
 
 
-  - if !@schedule[:recorded].empty?
+  - schedules = Bromo::Model::Schedule.recorded.from_time_desc
+  - if !schedules.empty?
     #page-header
       h2 Recorded head 5
-      == slim :_schedule_table_data, locals: {schedules: @schedule[:recorded].limit(5)}
+      == slim :_schedule_table_data, locals: {schedules: schedules}
+
+  - schedules = Bromo::Model::Schedule.now_on_air.from_time_desc
+  - if !schedules.empty?
+    #page-header
+      h2 Now on air
+      == slim :_schedule_table_data, locals: {schedules: schedules}
 
