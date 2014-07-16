@@ -4,7 +4,7 @@ module Bromo
       include Base
 
       # reserved_1: detail path
-      # reserved_2: page update_date
+      # reserved_2: page update_date (Time.at(XX).to_i.to_s)
 
       def update_db
         last_update_schedule = Model::Schedule.order("reserved_2 DESC").limit(1)
@@ -15,25 +15,15 @@ module Bromo
         end
 
         offset = 0
-        retry_count = 0
-        loop do
-
-          ret = update_programs_from_url_with_lastupdate("http://www.animate.tv/posts_list.php?name=%2Fradio%2F&offset=#{offset}&tagid=&category=radio", last_update)
-
-          if ret
-            retry_count = 0
-            offset += 10
-            Bromo.debug "#{object_id} animate page offset = #{offset}"
-          else
-            Bromo.debug "#{object_id} animate page offset = #{offset} Retry #{retry_count}"
-            retry_count += 1
-          end
+        while update_programs_from_url_with_lastupdate("http://www.animate.tv/posts_list.php?name=%2Fradio%2F&offset=#{offset}&tagid=&category=radio", last_update)
 
           Bromo.exsleep 10 # avoid 503
 
+          offset += 10
+          Bromo.debug "#{object_id} animate page offset = #{offset}"
+
           break if !Bromo::Core.running?
-          break if retry_count > 3
-          break if offset > 100 # force break
+          break if offset > 50 # force break
         end
       end
 
@@ -104,13 +94,10 @@ module Bromo
 
                   schedule.finger_print = title + " " + _date
 
-                  schedule_reserved_2 = update_date
+                  schedule.reserved_2 = update_date.to_i.to_s
 
-                  if Model::Schedule.where(finger_print: schedule.finger_print).empty?
-                    schedule.from_time = now + 60
-                    schedule.save_since_finger_print_not_exist
-                  end
-
+                  schedule.from_time = now + 60
+                  schedule.save_since_finger_print_not_exist
 
                 end
 
@@ -121,7 +108,7 @@ module Bromo
         rescue => e
           Bromo.debug e.message
           Bromo.debug "#{object_id} Can't open #{url} F#{__FILE__} L#{__LINE__}"
-          return false
+          return true
         end
 
         return true
