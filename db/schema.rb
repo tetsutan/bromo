@@ -11,7 +11,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140714152555) do
+ActiveRecord::Schema.define(version: 20140716114747) do
+
+  create_table "groups", force: true do |t|
+    t.string "name"
+    t.string "image_path"
+  end
 
   create_table "module_informations", force: true do |t|
     t.string   "module_name"
@@ -32,8 +37,8 @@ ActiveRecord::Schema.define(version: 20140714152555) do
     t.string  "reserved_1"
     t.string  "reserved_2"
     t.string  "reserved_3"
-    t.string  "group_name"
     t.integer "video"
+    t.integer "group_id"
   end
 
 end
