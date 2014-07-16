@@ -2,7 +2,7 @@
 
 require 'bromo'
 
-require Bromo::Config.rc_path if Bromo::Config.check_path
+Bromo::Config.load_config
 
 Signal.trap(:INT) do
   puts "trap :INT"

@@ -14,6 +14,9 @@ module Bromo
     def self.add(key, &block)
       @@reservations[key] = block
     end
+    def self.clear_reservation
+      @@reservations = {}
+    end
 
     def update_queue
       Bromo.debug("call update_queue")

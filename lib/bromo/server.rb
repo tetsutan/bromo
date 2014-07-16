@@ -147,6 +147,13 @@ module Bromo
 
     end
 
+    get '/reload_rc' do
+      QueueManager.clear_reservation
+      Bromo::Config.reload_config
+      Core.core.queue_manager.update_queue
+    end
+
+
   end
 end
 

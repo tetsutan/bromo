@@ -15,8 +15,20 @@ module Bromo
     }
 
     def self.configure(&block)
-      block.call(self) if block_given?
+      if @call_configure
+        block.call(self) if block_given?
+      end
       self
+    end
+
+    def self.load_config
+      @call_configure = true
+      load Bromo::Config.rc_path if Bromo::Config.check_path
+    end
+
+    def self.reload_config
+      @call_configure = false
+      load Bromo::Config.rc_path
     end
 
     def self.check_path
