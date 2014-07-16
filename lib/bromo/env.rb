@@ -3,7 +3,7 @@ module Bromo
   class Env
 
     def self.development?
-      env = ENV['RAILS_ENV']
+      env = ENV['RACK_ENV']
       !env || env == 'development'
     end
 

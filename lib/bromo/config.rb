@@ -31,6 +31,7 @@ module Bromo
       _data_dir = ENV['BROMO_DATA_DIR'] || @@config[:data_dir]
       _data_dir = File.expand_path _data_dir
       FileUtils.mkdir_p(_data_dir) if !File.exist?(_data_dir)
+      FileUtils.mkdir_p(File.join(_data_dir, "image"))
       self.data_dir = File.expand_path _data_dir
 
       true

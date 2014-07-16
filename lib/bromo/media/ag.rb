@@ -5,7 +5,7 @@ module Bromo
 
       realtime :true
       recording_delay_for_realtime 120
-      recording_extra_for_realtime 60 # maybe 30
+      recording_extra_for_realtime 30
 
       def update_db
         update_programs_from_url("http://ic-www.uniqueradio.jp/iphone_pg/get_program_json3.php")

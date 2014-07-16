@@ -15,11 +15,15 @@ require 'bromo/media'
 
 require 'bromo/core'
 
+# patch
+# require 'bromo/monkey/itunes_image_patch'
+
+
 # DB設定ファイルの読み込み
 ActiveRecord::Base.configurations = YAML.load_file('config/database.yml')
-ENV["RAILS_ENV"] ||= 'production'
-Bromo::Config.debug(false) if ENV['RAILS_ENV'] == 'production'
-ActiveRecord::Base.establish_connection(ENV['RAILS_ENV'].to_sym)
+ENV["RACK_ENV"] ||= 'production'
+Bromo::Config.debug(false) if ENV['RACK_ENV'] == 'production'
+ActiveRecord::Base.establish_connection(ENV['RACK_ENV'].to_sym)
 
 module Bromo
   # wrappers

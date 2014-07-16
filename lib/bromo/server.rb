@@ -2,6 +2,7 @@ require 'sinatra/base'
 require 'rss'
 require 'slim'
 
+
 module Bromo
   class Server < Sinatra::Base
 
@@ -35,6 +36,24 @@ module Bromo
         @hostname = host
         @hostname
       end
+
+      def shell_filepathable(str)
+        str.gsub(/[ \/\\\"\']/,'')
+      end
+
+      def check_filepath(str)
+        name, ext = shell_filepathable(file_name).split(".")
+        path = File.join(Config.data_dir, "#{name}.#{ext}")
+
+        path_base = File.basename(File.expand_path(path))
+
+        if path_base.start_with?(Config.data_dir)
+          return path
+        else
+          return nil
+        end
+      end
+
     end
 
     get '/list/*.xml' do |group_name|
@@ -58,6 +77,16 @@ module Bromo
           item.description = schedule.description
           item.date = Time.at(schedule.from_time)
 
+          # file_name = schedule.image_path
+          # p item.itunes_image
+          # p item.methods.select do |me|
+          #   me.to_s.include?("itunes")
+          # end
+
+          # if file_name
+          #   # item['itunes:image'] = "http://#{hostname}/data/image/#{file_name}"
+          # end
+
           file_name = schedule.file_path
           if file_name
             file_path = File.join(Config.data_dir, file_name)
@@ -76,9 +105,9 @@ module Bromo
     get '/data/*' do |file_name|
       protected!
 
-      path = File.join(Config.data_dir, file_name)
+      path = check_filepath(file_name)
 
-      return unless File.file?(path)
+      return unless path && File.file?(path)
 
       env['sinatra.static_file'] = path
       cache_control(*settings.static_cache_control) if settings.static_cache_control?
@@ -100,7 +129,6 @@ module Bromo
       slim :status
 
     end
-
 
   end
 end

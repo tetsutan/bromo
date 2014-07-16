@@ -15,15 +15,13 @@
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 
-ENV["RAILS_ENV"] ||= 'test'
+ENV["RACK_ENV"] ||= 'test'
 
 require 'database_cleaner'
 require 'bromo'
 require 'helper'
-ActiveRecord::Base.establish_connection(ENV['RAILS_ENV'].to_sym)
-
-require Bromo::Config.rc_path if Bromo::Config.check_path
-Bromo::Config.check_config
+require 'rack/test'
+ActiveRecord::Base.establish_connection(ENV['RACK_ENV'].to_sym)
 
 RSpec.configure do |config|
 # The settings below are suggested to provide a good initial experience
@@ -87,7 +85,21 @@ RSpec.configure do |config|
   end
 =end
 
+
+  ## setting for bromo
+  # Config
+  files_dir = File.join(File.dirname(__FILE__), 'files')
+  data_dir = File.join(files_dir, 'data')
+  ENV['BROMO_CONFIG_PATH'] = File.join(files_dir, 'bromorc.rb')
+  Bromo::Config.data_dir = data_dir
+
+  # logger
+  Bromo::Utils::Logger.logger.level = Logger::FATAL
+
+
+
   config.include Helpers
+  config.include Rack::Test::Methods
 
   config.before(:suite) do
     DatabaseCleaner.strategy = :transaction

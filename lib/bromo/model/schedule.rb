@@ -1,4 +1,5 @@
 require 'active_record'
+require 'digest/sha1'
 
 module Bromo
   module Model
@@ -106,6 +107,29 @@ module Bromo
           res.group_name = @@group_name if @@group_name
 
           res.video = VIDEO_TRUE if option[:video]
+
+          if option[:image]
+            image = option[:image]
+            image_url = image.is_a?(Proc) ? image.call : image.to_s
+            if image_url.start_with?('http')
+              # binary
+              ext = image_url.split(".").last
+              name = Digest::SHA1.hexdigest(image_url)
+              file_name = "#{name}.#{ext}"
+              file_path = File.join(Config.data_dir, "image", file_name)
+
+              if !File.exist?(file_path)
+                open(image_url) do |f_image|
+                  open(File.join(Config.data_dir, "image", file_name), "w") do |f_dest|
+                    f_dest.write(f_image.read)
+                  end
+                end
+              end
+
+              res.image_path = file_name
+            end
+          end
+
 
           res.save
         end
