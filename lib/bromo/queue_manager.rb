@@ -60,7 +60,7 @@ module Bromo
       end
     end
 
-    def pop
+    def pop!
       recorded_queue.first.tap do |q|
         if !q.nil?
           q.recorded = Model::Schedule::RECORDED_RECORDING
@@ -86,8 +86,20 @@ module Bromo
 
       Bromo.debug("record: recorded_queue size = #{recorded_queue.size}")
       if recorded_queue.size > 0 && recorded_queue.first.from_time - Time.now.to_i < 10
+        schedule = pop!
+
+        # too many pararel recording
+        Bromo.debug("record: recording size = #{Model::Schedule.recording.size}, relatime? = #{schedule.media.realtime?}")
+        if Model::Schedule.recording.size > 2 && !schedule.media.realtime?
+          Bromo.debug("pending: #{schedule.title}")
+          schedule.from_time = Time.now.to_i + (Random.rand(3..15) * 60)
+          schedule.recorded = Model::Schedule::RECORDED_QUEUE
+          schedule.save
+          return
+        end
+
         Bromo.debug("create recording thread pre")
-        Thread.start(pop) do |s|
+        Thread.start(schedule) do |s|
           Bromo.debug("create recording thread in poped s.id = #{s.id}")
           if !s.nil?
             s.thread = Thread.current
