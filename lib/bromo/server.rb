@@ -130,6 +130,7 @@ module Bromo
     end
 
     get '/status'do
+      protected!
 
       @search_query = params[:q]
       @search_result = nil
@@ -144,6 +145,7 @@ module Bromo
     end
 
     get '/reload_rc' do
+      protected!
       QueueManager.clear_reservation
       Bromo::Config.reload_config
       Core.core.queue_manager.update_queue
