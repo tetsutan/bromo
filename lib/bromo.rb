@@ -4,7 +4,6 @@ require 'bromo/env'
 
 require 'bromo/config'
 
-require 'bromo/queue'
 require 'bromo/server'
 require 'bromo/queue_manager'
 require 'bromo/schedule_updater'
