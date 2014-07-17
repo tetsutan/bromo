@@ -50,8 +50,9 @@ module Bromo
                   # #EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=235000,RESOLUTION=400x224
                   # #EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=575000,RESOLUTION=640x360
                   if line.match(/^#EXT-X-STREAM-INF:(.*)$/)
-                    $1.split(",").map(&:strip).each do |k,v|
-                      inf[k] = v
+                    $1.split(",").map(&:strip).each do |kv|
+                      key, val = kv.split("=")
+                      inf[key] = val
                     end
                   end
                 elsif line.match(/^http/)
