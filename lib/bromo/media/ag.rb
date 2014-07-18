@@ -55,7 +55,7 @@ module Bromo
                 schedule = Model::Schedule.new
                 schedule.media_name = self.name
                 schedule.channel_name = ""
-                schedule.title = prog['title']
+                # schedule.title = prog['title']
                 schedule.description = prog['personality'] + prog['detail']
 
                 from_to = ::Bromo::Utils::Date.today(
@@ -64,6 +64,9 @@ module Bromo
                 )
                 schedule.from_time = from_to[0].to_i
                 schedule.to_time = from_to[1].to_i
+
+                schedule.title = prog['title'] + " " +
+                  schedule.from_time.strftime("%m/%d")
 
                 schedule.finger_print = schedule.media_name + schedule.from_time.to_s
 

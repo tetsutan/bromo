@@ -54,11 +54,11 @@ module Bromo
             schedule = Model::Schedule.new
             schedule.media_name = self.name
             schedule.channel_name = ""
-            schedule.title = Utils.sanitize(prog.xpath('title').text)
-            schedule.description = Utils.sanitize(prog.xpath('update').text) + ' ' +
-              Utils.sanitize(prog.xpath('number').text) + ' ' +
+            schedule.title = Utils.sanitize(prog.xpath('title').text) + ' ' + Utils.sanitize(prog.xpath('update').text)
+            schedule.description = Utils.sanitize(prog.xpath('number').text) + ' ' +
               Utils.sanitize(prog.xpath('text').text) + ' ' +
-              Utils.sanitize(prog.xpath('detailURL').text)
+              Utils.sanitize(prog.xpath('detailURL').text) + ' ' +
+              Utils.sanitize(prog.xpath('update').text)
 
             schedule.from_time = 0
             schedule.to_time = 0

@@ -103,12 +103,17 @@ module Bromo
               schedule = Model::Schedule.new
               schedule.media_name = self.name
               schedule.channel_name = ch_id
-              schedule.title = Utils.sanitize(prog.xpath('title').text)
+              # schedule.title = Utils.sanitize(prog.xpath('title').text)
               schedule.description = Utils.sanitize(prog.xpath('info').text)
               schedule.from_time = time_parser(prog['ft']).to_i
               schedule.to_time = time_parser(prog['to']).to_i
 
-              schedule.finger_print = schedule.media_name + schedule.channel_name + schedule.from_time.to_s
+              schedule.title = Utils.sanitize(prog.xpath('title').text) + " " +
+                schedule.from_time.strftime("%m/%d")
+
+              schedule.finger_print = schedule.media_name +
+                schedule.channel_name +
+                schedule.from_time.to_s
 
               schedule.save_since_finger_print_not_exist
 
