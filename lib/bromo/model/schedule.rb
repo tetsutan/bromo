@@ -71,9 +71,9 @@ module Bromo
       end
 
 
-      scope :reset_queue!, ->{
+      def self.reset_queue!
         where(recorded: RECORDED_QUEUE).update_all(recorded: RECORDED_NONE)
-      }
+      end
 
       scope :queue, ->{
         where(recorded: RECORDED_QUEUE).where("from_time > ?", Time.now.to_i)
@@ -83,13 +83,12 @@ module Bromo
         order("from_time ASC")
       }
 
-      scope :clear_before!, ->(media_name, time=60 * 60 * 24 * 14){
+      def self.clear_before!(media_name, time=60 * 60 * 24 * 14)
         where(media_name: media_name).
         where(recorded: RECORDED_RECORDED).
         where("from_time < ?", Time.now.to_i - time). # two weeks ago
         delete_all
-      }
-
+      end
 
       # use in .bromrc.rb
       scope :media, ->(name) {
@@ -108,6 +107,7 @@ module Bromo
         where("from_time > ?", term[0].to_i)
       }
 
+      # FIXME move to method, but reserve! is called from ActiveRecord::Relation
       scope :reserve!, ->(option = {}){
         where(recorded: RECORDED_NONE).each do |res|
           res.recorded = RECORDED_QUEUE
