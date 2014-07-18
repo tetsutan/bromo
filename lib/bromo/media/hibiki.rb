@@ -14,7 +14,7 @@ module Bromo
         else
           # 前日のリストを取得してそれを録音
           # get_program/#{num} mon:0, fri:5, sat/sun:6
-          today = Utils::Date.today("0500", "0600")[0]
+          today = Time.now
           wday = today.wday
           num = wday - 1
           num = 6 if wday == 0 || wday == 6

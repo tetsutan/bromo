@@ -27,7 +27,7 @@
       == slim :_schedule_table_data, locals: {schedules: schedules}
 
 
-  - schedules = Bromo::Model::Schedule.recorded.from_time_desc
+  - schedules = Bromo::Model::Schedule.recorded.from_time_desc.limit(5)
   - if !schedules.empty?
     #page-header
       h2 Recorded head 5

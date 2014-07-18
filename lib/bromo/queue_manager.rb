@@ -112,11 +112,7 @@ module Bromo
     end
 
     def minimum_recording_time_to_left
-      Bromo.debug("call minimum_recording_time_to_left")
       min = recorded_queue.first
-      max = recorded_queue.last
-      Bromo.debug("queue_manager: min.title = #{min.title}, time_to_left = #{min.time_to_left}") if min
-      Bromo.debug("queue_manager: max.title = #{max.title}, time_to_left = #{max.time_to_left}") if max
       return min ? min.time_to_left : DEFAULT_WAIT_FOR_NEXT_RECORDING
     end
 

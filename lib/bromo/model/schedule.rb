@@ -105,9 +105,7 @@ module Bromo
       DAYS = %w/sunday monday tuesday wednesday thursday friday saturday/
       scope :day, ->(day){
         term = Utils::Date.next_x_day(DAYS.index(day.to_s), "0000", "2359")
-
-        # for SQLite
-        where("from_time > ?", term[0].to_i). where("to_time < ?", term[1].to_i)
+        where("from_time > ?", term[0].to_i)
       }
 
       scope :reserve!, ->(option = {}){

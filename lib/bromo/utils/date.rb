@@ -36,44 +36,8 @@ module Bromo
 
       end
 
-      def self.next_sunday(start_time, to_time)
-        self.next_x_day(0, start_time, to_time)
-      end
-      def self.next_monday(start_time, to_time)
-        self.next_x_day(1, start_time, to_time)
-      end
-      def self.next_tuesday(start_time, to_time)
-        self.next_x_day(2, start_time, to_time)
-      end
-      def self.next_wednesday(start_time, to_time)
-        self.next_x_day(3, start_time, to_time)
-      end
-      def self.next_thursday(start_time, to_time)
-        self.next_x_day(4, start_time, to_time)
-      end
-      def self.next_friday(start_time, to_time)
-        self.next_x_day(5, start_time, to_time)
-      end
-      def self.next_saturday(start_time, to_time)
-        self.next_x_day(6, start_time, to_time)
-      end
-
       def self.today(start_time, to_time)
         self.next_x_day(Time.now.wday, start_time, to_time)
-      end
-
-      def self.next(time)
-        now = Time.now
-        todays = self.next_x_day(Time.now.wday, time, time)
-        tomorrows = self.next_x_day(Time.now.wday+1, time, time)
-
-        diff = todays[0] - now
-        if (diff < 0)
-          tomorrows[0]
-        else
-          return todays[0]
-        end
-
       end
 
     end

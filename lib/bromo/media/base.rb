@@ -7,6 +7,7 @@ require 'streamio-ffmpeg'
 require 'tempfile'
 require 'pp'
 require 'fileutils'
+require 'cron_parser'
 
 module Bromo
   module Media
@@ -40,6 +41,14 @@ module Bromo
               self._recording_extra_for_realtime = val
             end
           end
+          def refresh_time(val=nil)
+            if val.nil?
+              return self._refresh_time || "0 5 * * *"
+            else
+              self._refresh_time = val
+            end
+          end
+
 
           def realtime?
             self._realtime
@@ -54,7 +63,10 @@ module Bromo
       include Setting
 
       included do
-        cattr_accessor :_realtime, :_recording_delay_for_realtime, :_recording_extra_for_realtime
+        cattr_accessor :_realtime,
+          :_recording_delay_for_realtime,
+          :_recording_extra_for_realtime,
+          :_refresh_time
         extend ClassMethods
       end
 
@@ -70,9 +82,23 @@ module Bromo
       def recording_extra_for_realtime
         self.class.recording_extra_for_realtime
       end
+      def refresh_time
+        self.class.refresh_time
+      end
 
-      def refresh_time_since
-        Utils::Date.next("500")
+      def next_update
+        CronParser.new(refresh_time).next(Time.at(updated_at))
+      end
+
+      def updated_at
+        information = Model::MediaInformation.find_or_create_by(media_name: name)
+        information.schedule_updated_at.to_i || 0
+      end
+
+
+      def need_refresh?
+        now = Time.now.to_i
+        return next_update.to_i < now
       end
 
       def clear_before
@@ -80,8 +106,16 @@ module Bromo
       end
 
       def update_schedule
-        clear_before
-        update_db
+        if need_refresh?
+          Bromo.debug "#{name} updating.."
+          clear_before
+          update_db
+          information = Model::MediaInformation.find_by(media_name: name)
+          information.schedule_updated_at = Time.now
+          information.save
+          return true
+        end
+        return false
       end
 
       # inheritance methods
