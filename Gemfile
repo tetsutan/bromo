@@ -12,6 +12,9 @@ gem 'streamio-ffmpeg'
 gem 'sinatra'
 gem 'slim'
 
+# use crom format
+gem 'parse-cron'
+
 # text normalization
 gem 'unf'
 
