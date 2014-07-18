@@ -33,6 +33,6 @@ table.table
           - group = schedule.group
           - if group.image_path
             a href="http://#{hostname}/list/#{group.name}.xml"
-              img src="http://#{hostname}/image/#{group.image_path}" alt="#{group.name}"
+              img src="http://#{hostname}/image/#{group.image_path}" alt="#{group.name}" class="group_icon"
           - elsif group.name
             a href="http://#{hostname}/list/#{group.name}.xml" #{group.name}
