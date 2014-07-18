@@ -162,6 +162,9 @@ module Bromo
       scope :from_time_desc, ->{
         order("from_time DESC")
       }
+      scope :from_time_asc, ->{
+        order("from_time ASC")
+      }
 
     end
   end

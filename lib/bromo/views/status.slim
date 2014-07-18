@@ -14,7 +14,7 @@
       h2 Recording
       == slim :_schedule_table_data, locals: {schedules: schedules}
 
-  - schedules = Bromo::Model::Schedule.queue.from_time_desc
+  - schedules = Bromo::Model::Schedule.queue.from_time_asc
   - if !schedules.empty?
     #page-header
       h2 Queue
