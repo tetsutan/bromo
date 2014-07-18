@@ -11,15 +11,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140716174732) do
+ActiveRecord::Schema.define(version: 20140718135023) do
 
   create_table "groups", force: true do |t|
     t.string "name"
     t.string "image_path"
   end
 
-  create_table "module_informations", force: true do |t|
-    t.string   "module_name"
+  create_table "media_informations", force: true do |t|
+    t.string   "media_name"
     t.datetime "schedule_updated_at"
   end
 
