@@ -106,8 +106,8 @@ module Bromo
               # schedule.title = Utils.sanitize(prog.xpath('title').text)
               schedule.description = Utils.sanitize(prog.xpath('info').text)
 
-              from_time = time_parser(prog['ft']).to_i
-              to_time = time_parser(prog['to']).to_i
+              from_time = time_parser(prog['ft'])
+              to_time = time_parser(prog['to'])
               schedule.from_time = from_time.to_i
               schedule.to_time = to_time.to_i
 
