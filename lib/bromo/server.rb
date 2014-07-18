@@ -137,9 +137,9 @@ module Bromo
     get '/status'do
       protected!
 
-      @search_query = params[:q]
+      @search_query = params[:q] || ""
       @search_result = nil
-      if @search_query
+      if !@search_query.empty?
         @search_result = Model::Schedule.search(@search_query).from_time_desc
       end
 
