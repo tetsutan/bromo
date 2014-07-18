@@ -131,8 +131,10 @@ module Bromo
         image_url = block_given? ? block.call : url
         if image_url && @@group_name
           Group.find_or_create_by(name: @@group_name).tap do |group|
-            group.image_path = Bromo::Utils.save_image(image_url)
-            group.save
+            new_image_path = Bromo::Utils.save_image(image_url)
+            if group.image_path != new_image_path
+              group.save
+            end
           end
         end
       end

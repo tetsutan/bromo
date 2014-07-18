@@ -12,9 +12,9 @@ module Bromo
 
       if url.start_with?('http')
         # binary
-        ext = url.split(".").last
+        ext = File.extname(URI.parse(url).path)
         name = Digest::SHA1.hexdigest(url)
-        file_name = "#{name}.#{ext}"
+        file_name = "#{name}#{ext}"
         file_path = File.join(Config.image_dir, file_name)
 
         if !File.exist?(file_path)

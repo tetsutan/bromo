@@ -66,7 +66,9 @@ module Bromo
 
         if group.image_path
           path = check_filepath(group.image_path, Config.image_dir)
-          maker.channel.itunes_image = RSS::ITunesChannelModel::ITunesImage.new(path)
+          if path
+            maker.channel.itunes_image = "http://#{hostname}/image/#{group.image_path}"
+          end
         end
 
         maker.items.do_sort = true
@@ -74,6 +76,9 @@ module Bromo
         if !schedules.empty?
           maker.channel.lastBuildDate = Time.at(schedules.first.to_time)
         end
+
+        maker.channel.itunes_subtitle = maker.channel.title
+
 
         schedules.each do |schedule|
           item = maker.items.new_item
