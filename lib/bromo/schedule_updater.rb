@@ -2,9 +2,10 @@ module Bromo
   class ScheduleUpdater
 
     def update
-      QueueManager.medias.any? do |m|
+      # QueueManager.medias.any? can not update two or more
+      QueueManager.medias.map { |m|
         m.update_schedule
-      end
+      }.any?
     end
 
     def minimum_refresh_time_to_left
