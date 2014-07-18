@@ -66,7 +66,7 @@ module Bromo
                 schedule.to_time = from_to[1].to_i
 
                 schedule.title = prog['title'] + " " +
-                  schedule.from_time.strftime("%m/%d")
+                  from_to[0].strftime("%m/%d")
 
                 schedule.finger_print = schedule.media_name + schedule.from_time.to_s
 

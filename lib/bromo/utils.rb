@@ -38,9 +38,9 @@ module Bromo
       str.gsub(/[ \/\\\"\']/,'').gsub(/[[:cntrl:]]/,"")
     end
 
-    def self.sanitize(str)
-      Nokogiri::HTML(str.to_s).text.gsub(/[[:cntrl:]]/,"")
-
+    def self.sanitize(str, remove_control=true)
+      str = Nokogiri::HTML(str.to_s).text
+      remove_control ? str.gsub(/[[:cntrl:]]/,"") : str
     end
 
 
