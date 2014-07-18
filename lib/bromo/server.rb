@@ -149,6 +149,7 @@ module Bromo
       QueueManager.clear_reservation
       Bromo::Config.reload_config
       Core.core.queue_manager.update_queue
+      Core.core.queue_exsleep.stop(true)
     end
 
 
