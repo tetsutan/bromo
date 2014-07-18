@@ -35,11 +35,12 @@ module Bromo
     end
 
     def self.shell_filepathable(str)
-      str.gsub(/[ \/\\\"\']/,'')
+      str.gsub(/[ \/\\\"\']/,'').gsub(/[[:cntrl:]]/,"")
     end
 
     def self.sanitize(str)
-      Nokogiri::HTML(str.to_s).text
+      Nokogiri::HTML(str.to_s).text.gsub(/[[:cntrl:]]/,"")
+
     end
 
 
