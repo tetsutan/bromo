@@ -83,7 +83,7 @@ module Bromo
               begin
                 open("http://image.hibiki-radio.jp/uploads/data/channel/#{video_id}/description.xml") do |f2|
                   doc = Nokogiri::XML(f2.read)
-                  schedule.description += doc.xpath('//data/outline').first.content
+                  schedule.description += Utils.sanitize(doc.xpath('//data/outline').first.content)
                 end
               rescue => e
                 Bromo.debug e.message
