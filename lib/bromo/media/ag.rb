@@ -6,6 +6,7 @@ module Bromo
       realtime :true
       recording_delay_for_realtime 120
       recording_extra_for_realtime 30
+      refresh_time "0 5 * * *"
 
       def update_db
         update_programs_from_url("http://ic-www.uniqueradio.jp/iphone_pg/get_program_json3.php")
@@ -28,6 +29,8 @@ module Bromo
 
         begin
           open(url) do |f|
+
+            now = Time.now
 
             program_list = JSON.load(f.read)
 
@@ -58,6 +61,9 @@ module Bromo
                 # schedule.title = prog['title']
                 schedule.description = prog['personality'] + prog['detail']
 
+                # スケジュールリストが午前４時に更新されるので、
+                # 午前4時以前に取得した場合は昨日のスケジュールとして管理するが
+                # 境界値でエラーを出さないために更新タイミングは５時に設定しておいたほうがいい
                 from_to = ::Bromo::Utils::Date.today(
                   prog['start'].sub(":",""),
                   prog['end'].sub(":","")
@@ -65,8 +71,14 @@ module Bromo
                 schedule.from_time = from_to[0].to_i
                 schedule.to_time = from_to[1].to_i
 
+                if(now < Bromo::Utils::Date.today("500", "500")[0])
+                  # 昨日のデータ
+                  schedule.from_time += 24*60*60
+                  schedule.to_time += 24*60*60
+                end
+
                 schedule.title = prog['title'] + " " +
-                  from_to[0].strftime("%m/%d")
+                  Time.at(schedule.from_time).strftime("%m/%d")
 
                 schedule.finger_print = schedule.media_name + schedule.from_time.to_s
 
