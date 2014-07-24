@@ -104,7 +104,7 @@ module Bromo
       DAYS = %w/sunday monday tuesday wednesday thursday friday saturday/
       scope :day, ->(day){
         term = Utils::Date.next_x_day(DAYS.index(day.to_s), "0000", "2359")
-        where("from_time > ?", term[0].to_i)
+        where("from_time > ? and to_time < ?", term[0].to_i, term[1].to_i)
       }
 
       # FIXME move to method, but reserve! is called from ActiveRecord::Relation

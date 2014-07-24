@@ -57,17 +57,20 @@ module Bromo
 
       group = Model::Group.find_by(name: group_name)
       return 404 if !group
-      schedules = Model::Schedule.recorded_by_group(group)
+      schedules = Model::Schedule.recorded_by_group(group).limit(50)
 
       rss = RSS::Maker.make("2.0") do |maker|
         maker.channel.title = Config.podcast_title_prefix + group_name
-        maker.channel.link = Config.podcast_link || Config.host || "www.example.com"
+        link = Config.podcast_link || Config.host || "www.example.com"
+        if link
+          maker.channel.link = URI.encode(link)
+        end
         maker.channel.description = maker.channel.title
 
         if group.image_path
           path = check_filepath(group.image_path, Config.image_dir)
           if path
-            maker.channel.itunes_image = "http://#{hostname}/image/#{group.image_path}"
+            maker.channel.itunes_image = URI.encode("http://#{hostname}/image/#{group.image_path}")
           end
         end
 
@@ -100,7 +103,7 @@ module Bromo
           if file_name
             file_path = File.join(Config.data_dir, file_name)
 
-            item.enclosure.url = "http://#{hostname}/data/#{file_name}"
+            item.enclosure.url = URI.encode("http://#{hostname}/data/#{file_name}")
             item.enclosure.length = File.size(file_path)
             item.enclosure.type = "audio/mpeg"
           end
