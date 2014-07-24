@@ -8,6 +8,10 @@ Signal.trap(:INT) do
   puts "trap :INT"
   Bromo::Core.stop
 end
+Signal.trap(:USR2) do
+  puts "trap :USR2"
+  Bromo::Core.stop
+end
 
 
 if Bromo::Config.check_config

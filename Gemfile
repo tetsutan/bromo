@@ -9,6 +9,7 @@ gem 'swf_ruby'
 gem 'streamio-ffmpeg'
 
 
+gem 'thin'
 gem 'sinatra'
 gem 'slim'
 
