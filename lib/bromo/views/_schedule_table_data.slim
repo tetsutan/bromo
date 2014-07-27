@@ -27,7 +27,12 @@ table.table
         - else
           td.recorded
 
-      td.media = schedule.media_name
+      td.media
+        - if schedule.channel_name && !schedule.channel_name.empty?
+          = "#{schedule.media_name}/#{schedule.channel_name}"
+        - else
+          = schedule.media_name
+
       td.group
         - if schedule.group
           - group = schedule.group

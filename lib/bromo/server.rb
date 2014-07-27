@@ -146,8 +146,6 @@ module Bromo
         @search_result = Model::Schedule.search(@search_query).from_time_desc
       end
 
-
-
       slim :status
 
     end
