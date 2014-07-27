@@ -55,9 +55,14 @@ module Bromo
     get '/list/*.xml' do |group_name|
       protected!
 
-      group = Model::Group.find_by(name: group_name)
-      return 404 if !group
-      schedules = Model::Schedule.recorded_by_group(group).limit(50)
+      if group_name == 'all'
+        group = Model::Group.find_or_create_by(name: group_name)
+        schedules = Model::Schedule.recorded.from_time_desc.limit(100)
+      else
+        group = Model::Group.find_by(name: group_name)
+        return 404 if !group
+        schedules = Model::Schedule.recorded_by_group(group).limit(50)
+      end
 
       rss = RSS::Maker.make("2.0") do |maker|
         maker.channel.title = Config.podcast_title_prefix + group_name
