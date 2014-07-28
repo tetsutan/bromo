@@ -35,7 +35,7 @@ module Bromo
     end
 
     def self.shell_filepathable(str)
-      str.gsub(/[ \/\\\"\']/,'').gsub(/[[:cntrl:]]/,"")
+      str.gsub(/[ \/\\\"\':?=]/,'').gsub(/[[:cntrl:]]/,"")
     end
 
     def self.sanitize(str, remove_control=true)
@@ -43,6 +43,17 @@ module Bromo
       remove_control ? str.gsub(/[[:cntrl:]]/,"") : str
     end
 
+    # for debug
+    def self.save_to_file(name, data)
+      return if !Bromo.debug?
+
+      time_str = Time.now.strftime("%Y%m%d_%H%M%S")
+      path = File.join(Config.log_dir, "#{time_str}_#{shell_filepathable(name)}")
+      open(path, "w") do |f|
+        f.write data
+      end
+
+    end
 
   end
 end

@@ -85,7 +85,9 @@ module Bromo
 
       def get_station_ids_with_url(url)
         open(url) do |f|
-          doc = Nokogiri::XML(f.read)
+          text = f.read
+          Utils.save_to_file(url, text)
+          doc = Nokogiri::XML(text)
           return doc.xpath('//stations/station/id').map do |s|
             s.text
           end
@@ -94,7 +96,9 @@ module Bromo
 
       def update_weekly_program_with_url(url)
         open(url) do |f|
-          doc = Nokogiri::XML(f.read)
+          text = f.read
+          Utils.save_to_file(url, text)
+          doc = Nokogiri::XML(text)
           doc.xpath('//radiko/stations/station').each do |s|
             ch_id = s['id']
             s.xpath('scd/progs/prog').each do |prog|
