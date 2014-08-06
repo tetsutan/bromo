@@ -108,15 +108,15 @@ module Bromo
       }
       scope :time_after, ->(day, time){
         term = Utils::Date.next_x_day(DAYS.index(day.to_s), time, "2359")
-        where("from_time > ? and from_time < ?", term[0].to_i, term[1].to_i)
+        where("from_time >= ? and from_time <= ?", term[0].to_i, term[1].to_i)
       }
       scope :time_before, ->(day, time){
         term = Utils::Date.next_x_day(DAYS.index(day.to_s), "0000", time)
-        where("from_time > ? and from_time < ?", term[0].to_i, term[1].to_i)
+        where("from_time >= ? and from_time <= ?", term[0].to_i, term[1].to_i)
       }
       scope :time_between, ->(day, time_a, time_b){
         term = Utils::Date.next_x_day(DAYS.index(day.to_s), time_a, time_b)
-        where("from_time > ? and from_time < ?", term[0].to_i, term[1].to_i)
+        where("from_time >= ? and from_time <= ?", term[0].to_i, term[1].to_i)
       }
 
       # FIXME move to method, but reserve! is called from ActiveRecord::Relation
