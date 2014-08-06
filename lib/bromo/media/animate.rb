@@ -36,6 +36,7 @@ module Bromo
           return false
         end
 
+        delay_converting
         file_name = generate_filename(schedule.title, schedule.video?)
         rec_filepath = File.join(Config.data_dir, file_name)
         file = FFMPEG::Movie.new(tempfile.path)
@@ -74,6 +75,8 @@ module Bromo
               open("#{base_url}#{detail_path}") do |f2|
                 detail_page = Nokogiri::HTML(f2.read)
 
+                description = detail_page.css('div.textBox').first.text
+
                 detail_page.css('div.playBox').each do |playbox|
                   title = playbox.css('div.ttlArea h3').first.content
                   playpath = playbox.css('div.btnArea p.btn a').first['href']
@@ -86,6 +89,7 @@ module Bromo
                   schedule.media_name = self.name
                   schedule.channel_name = ""
                   schedule.title = Utils.sanitize(title)
+                  schedule.description = description
                   schedule.from_time = 0
                   schedule.to_time = 0
 
