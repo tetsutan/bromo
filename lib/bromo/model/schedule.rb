@@ -51,6 +51,14 @@ module Bromo
         self.from_time - Time.now.to_i
       end
 
+      def end_time_to_left
+        if self.to_time
+          self.to_time - Time.now.to_i
+        else
+          0
+        end
+      end
+
       def save_since_finger_print_not_exist
         if !Model::Schedule.where(finger_print: self.finger_print).exists?
           save
@@ -176,6 +184,12 @@ module Bromo
       }
       scope :from_time_asc, ->{
         order("from_time ASC")
+      }
+      scope :to_time_desc, ->{
+        order("to_time DESC")
+      }
+      scope :to_time_asc, ->{
+        order("to_time ASC")
       }
 
     end

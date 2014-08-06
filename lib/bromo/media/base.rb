@@ -184,6 +184,22 @@ module Bromo
         end
       end
 
+      def delay_converting(count=0)
+        return if count > 20
+
+        # realtime item that is recorded last
+        last_recording = Schedule.now_on_air.to_time_desc.select { |schedule|
+          schedule.media.realtime?
+        }.first
+
+        if last_recording
+          count+=1
+          Bromo.exsleep(last_recording.end_time_to_left)
+          delay_converting(count)
+        end
+
+      end
+
     end
   end
 end
