@@ -69,6 +69,7 @@ module Bromo
 
       realtime :true
       recording_delay_for_realtime 20
+      refresh_time "0 5,6,7 * * 1 *" # Monday 5,6,7am
 
       def self.area_id=(area_id)
         @@area_id = area_id
@@ -86,7 +87,7 @@ module Bromo
       def get_station_ids_with_url(url)
         open(url) do |f|
           text = f.read
-          Utils.save_to_file(url, text)
+          Utils.save_to_file("RADIKO_have_checked_updating_schedule_"+url, text)
           doc = Nokogiri::XML(text)
           return doc.xpath('//stations/station/id').map do |s|
             s.text
@@ -97,7 +98,8 @@ module Bromo
       def update_weekly_program_with_url(url)
         open(url) do |f|
           text = f.read
-          Utils.save_to_file(url, text)
+          Utils.save_to_file("RADIKO_have_checked_updating_schedule_"+url, text)
+          doc = Nokogiri::XML(text)
           doc = Nokogiri::XML(text)
           doc.xpath('//radiko/stations/station').each do |s|
             ch_id = s['id']
