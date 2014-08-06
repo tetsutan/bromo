@@ -26,12 +26,16 @@ module Bromo
 
         url = "http://www.weeeef.com/weeeef001/BookServlet"
         res = get_response(url, cookie, COMMAND_URL)
+
+        Utils.save_to_file("AG_is_valid_current_fingerprint_"+url, res)
+
         doc = Nokogiri::XML(res)
         doc.xpath("//Books/Book").each do |book|
 
           title = book.attribute('label').text
           updatetime = book.attribute('updateTime').text
-          book_id = book.attribute('id').text
+          book_id = book.attribute('id').text # contens ID in program
+          contents_id = book.attribute('contentsId').text # program ID
 
 
           # Model::Schedule.
@@ -46,7 +50,7 @@ module Bromo
 
           schedule.reserved_1 = book_id
 
-          schedule.finger_print = schedule.media_name + schedule.title + updatetime
+          schedule.finger_print = schedule.media_name + book_id + contents_id
 
           schedule.from_time = now + 60
           schedule.save_since_finger_print_not_exist
