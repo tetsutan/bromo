@@ -167,6 +167,7 @@ module Bromo
           return
         end
 
+        delay_converting
         rec_filepath = File.join(Config.data_dir, file_name)
         file.transcode(rec_filepath)
 
@@ -186,15 +187,21 @@ module Bromo
 
       def delay_converting(count=0)
         return if count > 20
+        return if !Bromo::Core.running?
 
         # realtime item that is recorded last
-        last_recording = Schedule.now_on_air.to_time_desc.select { |schedule|
-          schedule.media.realtime?
+        last_recording = Model::Schedule.recording.now_on_air.to_time_desc.select { |schedule|
+          if schedule.media
+            schedule.media.realtime?
+          else
+            false
+          end
         }.first
 
         if last_recording
           count+=1
-          Bromo.exsleep(last_recording.end_time_to_left)
+          Bromo.debug "DelayConverting: wait for #{last_recording.title}"
+          Bromo.exsleep(last_recording.end_time_to_left + rand(120..300)) # plus 2^5 min
           delay_converting(count)
         end
 

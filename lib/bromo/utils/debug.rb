@@ -66,8 +66,8 @@ module Bromo
         schedule.channel_name = ""
         schedule.title = "BromoTest Ag 1"
         schedule.description = "Bromo Test Description"
-        schedule.from_time = now + 10
-        schedule.to_time = schedule.from_time + 30
+        schedule.from_time = now - 10
+        schedule.to_time = schedule.from_time + 90
         schedule.finger_print = schedule.media_name + schedule.channel_name + schedule.from_time.to_s
         schedule.save_since_finger_print_not_exist
 

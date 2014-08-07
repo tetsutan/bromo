@@ -129,7 +129,10 @@ module Bromo
 
       # FIXME move to method, but reserve! is called from ActiveRecord::Relation
       scope :reserve!, ->(option = {}){
+        now = Time.now
         where(recorded: RECORDED_NONE).each do |res|
+          next if res.media && res.media.realtime? && res.to_time < now.to_i
+
           res.recorded = RECORDED_QUEUE
           if @@group_name
             res.group = Group.find_or_create_by(name: @@group_name)

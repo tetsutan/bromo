@@ -34,7 +34,9 @@ module Bromo
           open(url,"User-Agent" => user_agent) do |f|
             base_url = 'http://cnt.kingrecords.co.jp/ohsama/sp/'
 
-            doc = Nokogiri::HTML(f.read)
+            text = f.read
+            Utils.save_to_file("OHSAMA_is_valid_bctic_"+url, text)
+            doc = Nokogiri::HTML(text)
             doc.css('#content4 ul li').each do |litag|
 
               title = litag.css(".artist_name").first.content +

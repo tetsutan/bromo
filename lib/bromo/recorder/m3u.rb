@@ -18,6 +18,12 @@ module Bromo
       end
 
       def record(to_time=0)
+        rec(url, to_time)
+      end
+
+      def rec(url, to_time=0)
+
+        base_url = File.dirname(url)
 
         target_duration = 9
         ts_set = Set.new
@@ -25,7 +31,7 @@ module Bromo
         Bromo.debug "#{object_id} realtime = #{realtime}"
 
         while !realtime || Time.now.to_i < to_time.to_i
-          Bromo.debug "#{object_id} recording.."
+          Bromo.debug "#{object_id} recording.. url = #{url}"
 
           # #EXTM3U
           # #EXT-X-TARGETDURATION:9
@@ -55,14 +61,22 @@ module Bromo
                       inf[key] = val
                     end
                   end
-                elsif line.match(/^http/)
+                else
                   m3u_url = line.chomp
+                  if !m3u_url.match(/^http/)
+                    # no schema
+                    m3u_url = File.join(base_url,m3u_url)
+                  end
+                  if m3u_url.match(/m3u8$/)
+                    _m3u = M3u.new(m3u_url, realtime)
+                    self.m3us[m3u_url] = _m3u.record(to_time)
+                  else
+                    inf_id = inf["PROGRAM-ID"] || nil
 
-                  inf_id = inf["PROGRAM-ID"] || nil
-
-                  if !self.m3us[m3u_url] && !self.downloaded_inf_ids.include?(inf_id)
-                    self.m3us[m3u_url] = M3uDownloader.new(m3u_url)
-                    self.downloaded_inf_ids.push(inf_id) if inf_id
+                    if !self.m3us[m3u_url] && !self.downloaded_inf_ids.include?(inf_id)
+                      self.m3us[m3u_url] = M3uDownloader.new(m3u_url)
+                      self.downloaded_inf_ids.push(inf_id) if inf_id
+                    end
                   end
 
                   inf = {} # reset inf
@@ -71,7 +85,7 @@ module Bromo
               end
             end
           rescue => e
-            Bromo.debug e.message
+            Bromo.debug e.backtrace
             Bromo.debug "#{object_id} Can't open url F#{__FILE__} L#{__LINE__}"
             block.call if block_given?
             return
@@ -79,7 +93,7 @@ module Bromo
 
           # Bromo.debug "self.m3us size = #{self.m3us.size}"
           self.m3us.each do |url, m3u|
-            m3u.download if !m3u.downloaded?
+            m3u.download if m3u.is_a?(M3uDownloader) && !m3u.downloaded?
           end
 
           # Bromo.debug "sleep target_duration of #{target_duration}"
@@ -93,12 +107,16 @@ module Bromo
         # data = self.m3us.values.map{|m3u| m3u.data }.join
         _m3us = []
         self.m3us.each do |key, m3u|
-          _m3us.push(m3u.data)
+          if m3u.is_a? M3uDownloader
+            _m3us.push(m3u.data)
+          else
+            _m3us.push(m3u)
+          end
         end
 
         # close m3u
         self.m3us.each do |key, m3u|
-          m3u.close
+          m3u.close if m3u.is_a? M3uDownloader
         end
 
         return _m3us.join
