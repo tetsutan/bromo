@@ -81,6 +81,10 @@ module Bromo
 
       def self.reset_queue!
         where(recorded: RECORDED_QUEUE).update_all(recorded: RECORDED_NONE)
+
+        # Re-Recoding if now on air, else failed
+        where(recorded: RECORDED_RECORDING).now_on_air.update_all(recorded: RECORDED_NONE)
+        where(recorded: RECORDED_RECORDING).update_all(recorded: RECORDED_FAILED)
       end
 
       scope :queue, ->{
