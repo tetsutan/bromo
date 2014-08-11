@@ -148,7 +148,10 @@ module Bromo
       @search_query = params[:q] || ""
       @search_result = nil
       if !@search_query.empty?
-        @search_result = Model::Schedule.search(@search_query).from_time_desc
+        one_week_ago = Time.now.to_i - 60 * 60 * 24 * 7
+        @search_result = Model::Schedule.search(@search_query)
+          .where("from_time > ?", one_week_ago)
+          .from_time_desc
       end
 
       slim :status
