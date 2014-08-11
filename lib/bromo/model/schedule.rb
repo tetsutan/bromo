@@ -156,6 +156,7 @@ module Bromo
           Group.find_or_create_by(name: @@group_name).tap do |group|
             new_image_path = Bromo::Utils.save_image(image_url)
             if group.image_path != new_image_path
+              group.image_path = new_image_path
               group.save
             end
           end
