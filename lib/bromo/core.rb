@@ -19,6 +19,7 @@ module Bromo
       Bromo.debug("start refresh")
       core.running = true
       Utils::Debug.insert_debug_schedule if Bromo.debug?
+      core.queue_manager.clean_queue
       core.queue_manager.update_queue
       core.start_refresh_schedule
       core.start_check_queue

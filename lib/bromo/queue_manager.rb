@@ -18,6 +18,10 @@ module Bromo
       @@reservations = {}
     end
 
+    def clean_queue
+      Model::Schedule.clean_queue!
+    end
+
     def update_queue
       Bromo.debug("call update_queue")
 
