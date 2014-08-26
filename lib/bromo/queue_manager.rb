@@ -6,7 +6,7 @@ module Bromo
     @@medias = nil
     def self.medias
       @@medias ||= Config.media_names.map {|name|
-        Bromo::Media.const_get(name.capitalize).new
+        Bromo::Media.const_get(name.classify).new
       }
     end
 

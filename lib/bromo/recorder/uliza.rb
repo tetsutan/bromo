@@ -307,7 +307,7 @@ module Bromo
       end
 
       def record(to_time=0)
-        http_for_cookie(url_for_cookie)
+        self.url = m3u_url(url_for_cookie)
         if url.nil?
           Bromo.debug "#{object_id} ERROR: m3u_url not found"
           return

@@ -17,7 +17,7 @@ module Bromo
         module ClassMethods
 
           def media_name
-            self.name.split("::").last.downcase
+            self.name.split("::").last.underscore
           end
 
           def realtime(val=nil)

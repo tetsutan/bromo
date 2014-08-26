@@ -67,16 +67,16 @@ module Bromo
                     # no schema
                     m3u_url = File.join(base_url,m3u_url)
                   end
-                  if m3u_url.match(/m3u8$/)
-                    _m3u = M3u.new(m3u_url, realtime)
-                    self.m3us[m3u_url] = _m3u.record(to_time)
-                  else
-                    inf_id = inf["PROGRAM-ID"] || nil
 
-                    if !self.m3us[m3u_url] && !self.downloaded_inf_ids.include?(inf_id)
+                  inf_id = inf["PROGRAM-ID"] || nil
+                  if !self.m3us[m3u_url] && !self.downloaded_inf_ids.include?(inf_id)
+                    if m3u_url.match(/m3u8$/)
+                      _m3u = M3u.new(m3u_url, realtime)
+                      self.m3us[m3u_url] = _m3u.record(to_time)
+                    else
                       self.m3us[m3u_url] = M3uDownloader.new(m3u_url)
-                      self.downloaded_inf_ids.push(inf_id) if inf_id
                     end
+                    self.downloaded_inf_ids.push(inf_id) if inf_id
                   end
 
                   inf = {} # reset inf
