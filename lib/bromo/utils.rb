@@ -35,7 +35,7 @@ module Bromo
     end
 
     def self.shell_filepathable(str)
-      str.gsub(/[ \/\\\"\':?=]/,'').gsub(/[[:cntrl:]]/,"")
+      str.gsub(/[ \/\\\"\':?=\.]/,'').gsub(/[[:cntrl:]]/,"")
     end
 
     def self.sanitize(str, remove_control=true)

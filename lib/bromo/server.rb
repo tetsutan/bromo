@@ -38,9 +38,9 @@ module Bromo
       end
 
       def check_filepath(file_name, dir)
-        name, ext = Utils.shell_filepathable(file_name).split(".")
-        path = File.join(dir, "#{name}.#{ext}")
-
+        ext = file_name.split(".").last
+        name = file_name[0, file_name.size - ext.size - 1]
+        path = File.join(dir, "#{Utils.shell_filepathable(name)}.#{ext}")
         path_base = File.dirname(File.expand_path(path))
 
         if path_base.start_with?(dir)
