@@ -20,7 +20,7 @@
       h2 Queue
       == slim :_schedule_table_data, locals: {schedules: schedules}
 
-  - schedules = Bromo::Model::Schedule.failed.from_time_desc
+  - schedules = Bromo::Model::Schedule.failed.where("from_time > ?", Time.now.to_i - (14 * 24 * 60 * 60)).from_time_desc
   - if !schedules.empty?
     #page-header
       h2 Failed

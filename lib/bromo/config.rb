@@ -71,7 +71,7 @@ module Bromo
       if(media_name == 'all')
         const = Media.constants.dup
         const.delete(:Base)
-        @@media_names = const.map(&:underscore)
+        @@media_names = const.map(&:to_s).map(&:underscore)
       else
         @@media_names.push media_name
       end
