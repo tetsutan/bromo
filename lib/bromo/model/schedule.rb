@@ -137,6 +137,9 @@ module Bromo
         now = Time.now
         where(recorded: RECORDED_NONE).each do |res|
           next if res.media && res.media.realtime? && res.to_time < now.to_i
+          if res.media && res.media.term_of_nonrealtime
+            next if res.from_time + res.media.term_of_nonrealtime < now.to_i
+          end
 
           res.recorded = RECORDED_QUEUE
           if @@group_name

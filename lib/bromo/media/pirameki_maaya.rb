@@ -56,11 +56,10 @@ module Bromo
               # add month
               schedule.finger_print = schedule.title
 
-              schedule.from_time = 1
-              schedule.to_time = 2
+              schedule.from_time = now + 60
               schedule.save_since_finger_print_not_exist
 
-              return
+
             end
 
           end

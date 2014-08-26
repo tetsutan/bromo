@@ -49,6 +49,13 @@ module Bromo
             end
           end
 
+          def term_of_nonrealtime(val=nil)
+            if val.nil?
+              return self._term_of_nonrealtime || (30 * 24 * 60 * 60) # default: 30 days
+            else
+              self._term_of_nonrealtime = val
+            end
+          end
 
           def realtime?
             self._realtime
@@ -66,7 +73,8 @@ module Bromo
         cattr_accessor :_realtime,
           :_recording_delay_for_realtime,
           :_recording_extra_for_realtime,
-          :_refresh_time
+          :_refresh_time,
+          :_term_of_nonrealtime
         extend ClassMethods
       end
 
@@ -84,6 +92,9 @@ module Bromo
       end
       def refresh_time
         self.class.refresh_time
+      end
+      def term_of_nonrealtime
+        self.class.term_of_nonrealtime
       end
 
       def next_update
