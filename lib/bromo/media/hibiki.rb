@@ -6,22 +6,9 @@ module Bromo
       # reserved_1: flv file url
 
       def update_db
-        # 初めてのアップデートの時だけ全件取得
-        if first_update?
-          6.times do |num|
-            update_programs_from_url("http://hibiki-radio.jp/get_program/#{num}")
-          end
-        else
-          # 前日のリストを取得してそれを録音
-          # get_program/#{num} mon:0, fri:5, sat/sun:6
-          today = Time.now
-          wday = today.wday
-          num = wday - 1
-          num = 6 if wday == 0 || wday == 6
-
+        6.times do |num|
           update_programs_from_url("http://hibiki-radio.jp/get_program/#{num}")
         end
-
       end
 
       def record(schedule)
