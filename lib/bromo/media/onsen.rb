@@ -49,23 +49,28 @@ module Bromo
             next if file_url.nil?
             file_url = file_url.text
 
+            title = prog.xpath('title').text
+            number = prog.xpath('number').text
+            update = prog.xpath('number').text
+            text = prog.xpath('text').text
+            detailURL = prog.xpath('detailURL').text
 
             # Model::Schedule.
             schedule = Model::Schedule.new
             schedule.media_name = self.name
             schedule.channel_name = ""
-            schedule.title = Utils.sanitize(prog.xpath('title').text) + ' ' + Utils.sanitize(prog.xpath('update').text)
-            schedule.description = Utils.sanitize(prog.xpath('number').text) + ' ' +
-              Utils.sanitize(prog.xpath('text').text) + ' ' +
-              Utils.sanitize(prog.xpath('detailURL').text) + ' ' +
-              Utils.sanitize(prog.xpath('update').text)
+            schedule.title = Utils.sanitize(title) + ' ' + Utils.sanitize(update)
+            schedule.description = Utils.sanitize(number) + ' ' +
+              Utils.sanitize(text) + ' ' +
+              Utils.sanitize(detailURL) + ' ' +
+              Utils.sanitize(update)
 
             schedule.from_time = 0
             schedule.to_time = 0
 
             schedule.reserved_1 = file_url
 
-            schedule.finger_print = schedule.media_name + schedule.description
+            schedule.finger_print = schedule.media_name + schedule.title + number
 
             schedule.from_time = now + 60
             schedule.save_since_finger_print_not_exist
