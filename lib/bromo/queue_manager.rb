@@ -108,8 +108,14 @@ module Bromo
           if !s.nil?
             s.thread = Thread.current
             Bromo.debug("recording thread = #{s.thread}")
-            s.start_recording
-            ActiveRecord::Base.connection.close
+            begin
+              s.start_recording
+            rescue => ex
+              Bromo.debug ex.message
+              s.recorded = RECORDED_FAILED
+              s.save
+              ActiveRecord::Base.connection.close
+            end
           end
         end
       end
