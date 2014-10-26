@@ -104,17 +104,20 @@ module Bromo
 
         Bromo.debug("create recording thread pre")
         Thread.start(schedule) do |s|
-          Bromo.debug("create recording thread in poped s.id = #{s.id}")
-          if !s.nil?
-            s.thread = Thread.current
-            Bromo.debug("recording thread = #{s.thread}")
-            begin
-              s.start_recording
-            rescue => ex
-              Bromo.debug ex.message
-              s.recorded = RECORDED_FAILED
-              s.save
-              ActiveRecord::Base.connection.close
+          ActiveRecord::Base.connection_pool.with_connection do
+            Bromo.debug("create recording thread in poped s.id = #{s.id}")
+            if !s.nil?
+              s.thread = Thread.current
+              Bromo.debug("recording thread = #{s.thread}")
+              begin
+                s.start_recording
+              rescue => ex
+                Bromo.debug ex.message
+                s = Model::Schedule.find(s.id)
+                s.recorded = Model::Schedule::RECORDED_FAILED
+                s.save
+                ActiveRecord::Base.connection.close
+              end
             end
           end
         end

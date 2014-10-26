@@ -63,18 +63,19 @@ module Bromo
       @refresh_schedule_thread_flag = true
 
       @refresh_schedule_thread = Thread.new do
-
-        Bromo.debug "start schedule thread"
-        while Bromo.exsleep(schedule_updater.minimum_refresh_time_to_left) do
-          break if !@refresh_schedule_thread_flag
-          Bromo.debug("updater loop: schedule_updater.update")
-          if schedule_updater.update
-            Bromo.debug("updater loop: schedule_updater updated!")
-            queue_manager.update_queue
-            queue_exsleep.stop(true)
+        ActiveRecord::Base.connection_pool.with_connection do
+          Bromo.debug "start schedule thread"
+          while Bromo.exsleep(schedule_updater.minimum_refresh_time_to_left) do
+            break if !@refresh_schedule_thread_flag
+            Bromo.debug("updater loop: schedule_updater.update")
+            if schedule_updater.update
+              Bromo.debug("updater loop: schedule_updater updated!")
+              queue_manager.update_queue
+              queue_exsleep.stop(true)
+            end
           end
+          Bromo.debug "end schedule thread"
         end
-        Bromo.debug "end schedule thread"
       end
 
     end
@@ -87,15 +88,16 @@ module Bromo
 
       Bromo.debug("create check thread")
       @check_queue_thread = Thread.new do
-
-        Bromo.debug "start queue thread"
-        while queue_exsleep.exsleep(queue_manager.minimum_recording_time_to_left) do
-          break if !@check_queue_thread_flag
-          Bromo.debug("core: while loop record")
-          queue_manager.update_queue
-          queue_manager.record
+        ActiveRecord::Base.connection_pool.with_connection do
+          Bromo.debug "start queue thread"
+          while queue_exsleep.exsleep(queue_manager.minimum_recording_time_to_left) do
+            break if !@check_queue_thread_flag
+            Bromo.debug("core: while loop record")
+            queue_manager.update_queue
+            queue_manager.record
+          end
+          Bromo.debug "end queue thread"
         end
-        Bromo.debug "end queue thread"
       end
 
 
