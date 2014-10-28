@@ -166,6 +166,17 @@ module Bromo
       Core.core.queue_exsleep.stop(true)
     end
 
+    get '/redownload' do
+      protected!
+
+      id = params[:id]
+
+      schedule = Model::Schedule.find(id)
+      schedule.recorded = Model::Schedule::RECORDED_QUEUE
+      schedule.save!
+
+      Core.core.queue_exsleep.stop(true)
+    end
 
   end
 end

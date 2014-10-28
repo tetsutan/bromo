@@ -23,7 +23,10 @@ table.table
         - when Bromo::Model::Schedule::RECORDED_RECORDING
           td.recorded class="warning" Recording
         - when Bromo::Model::Schedule::RECORDED_FAILED
-          td.recorded class="danger" Failed
+          td.recorded class="danger"
+            p Failed
+            - if !schedule.media.realtime?
+              button.redownload id="#{schedule.id}" Try Re-Download
         - else
           td.recorded
 
