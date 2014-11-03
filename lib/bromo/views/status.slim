@@ -39,3 +39,11 @@
       h2 Now on air
       == slim :_schedule_table_data, locals: {schedules: schedules}
 
+
+  - Bromo::QueueManager.medias.each do |media|
+    h2 Last Recorded Media: #{media.name}
+    - schedules = Bromo::Model::Schedule.where(media_name: media.name).recorded.order("created_at DESC").limit(1)
+    - if !schedules.empty?
+      == slim :_schedule_table_data, locals: {schedules: schedules}
+
+
