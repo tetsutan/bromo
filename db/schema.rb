@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140718135023) do
+ActiveRecord::Schema.define(version: 20141103192212) do
 
   create_table "groups", force: true do |t|
     t.string "name"
@@ -24,22 +24,24 @@ ActiveRecord::Schema.define(version: 20140718135023) do
   end
 
   create_table "schedules", force: true do |t|
-    t.string  "media_name"
-    t.string  "channel_name"
-    t.string  "title"
-    t.string  "description"
-    t.integer "from_time"
-    t.integer "to_time"
-    t.string  "finger_print"
-    t.integer "recorded",     default: 0
-    t.string  "file_path"
-    t.string  "image_path"
-    t.string  "reserved_1"
-    t.string  "reserved_2"
-    t.string  "reserved_3"
-    t.integer "video"
-    t.integer "group_id"
-    t.string  "search_text"
+    t.string   "media_name"
+    t.string   "channel_name"
+    t.string   "title"
+    t.string   "description"
+    t.integer  "from_time"
+    t.integer  "to_time"
+    t.string   "finger_print"
+    t.integer  "recorded",     default: 0
+    t.string   "file_path"
+    t.string   "image_path"
+    t.string   "reserved_1"
+    t.string   "reserved_2"
+    t.string   "reserved_3"
+    t.integer  "video"
+    t.integer  "group_id"
+    t.string   "search_text"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
 end
