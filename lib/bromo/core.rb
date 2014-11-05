@@ -117,18 +117,20 @@ module Bromo
 
     def start_server
       @server_thread = Thread.new do
-        Bromo::Server.set :bind, Config.host
-        Bromo::Server.set :port, Config.port
-        Bromo::Server.set :signals, false
-        Bromo::Server.set :traps, false
-        Bromo::Server.set :options, {signals: false}
-        Bromo::Server.run! do |server|
-          if server.class.name == 'Thin::Server'
-            # ignore signal trap in server
-            server.instance_variable_set(:@setup_signals, false)
+        ActiveRecord::Base.connection_pool.with_connection do
+          Bromo::Server.set :bind, Config.host
+          Bromo::Server.set :port, Config.port
+          Bromo::Server.set :signals, false
+          Bromo::Server.set :traps, false
+          Bromo::Server.set :options, {signals: false}
+          Bromo::Server.run! do |server|
+            if server.class.name == 'Thin::Server'
+              # ignore signal trap in server
+              server.instance_variable_set(:@setup_signals, false)
+            end
           end
-        end
 
+        end
       end
     end
 
