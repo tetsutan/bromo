@@ -30,6 +30,7 @@ module Bromo
         Bromo.debug "#{object_id} from(now): #{Time.now.to_i} to: #{to_time.to_i}"
         Bromo.debug "#{object_id} realtime = #{realtime}"
 
+        retry_count = 0
         while !realtime || Time.now.to_i < to_time.to_i
           Bromo.debug "#{object_id} recording.. url = #{url}"
 
@@ -87,8 +88,11 @@ module Bromo
           rescue => e
             Bromo.debug e.backtrace
             Bromo.debug "#{object_id} Can't open url F#{__FILE__} L#{__LINE__}"
-            block.call if block_given?
-            return
+            if retry_count > 20
+              block.call if block_given?
+              return
+            end
+            retry_count += 1
           end
 
           # Bromo.debug "self.m3us size = #{self.m3us.size}"
