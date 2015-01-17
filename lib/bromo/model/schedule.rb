@@ -143,7 +143,9 @@ module Bromo
 
           res.recorded = RECORDED_QUEUE
           if @@group_name
-            res.group = Group.find_or_create_by(name: @@group_name)
+            ActiveRecord::Base.connection_pool.with_connection do
+              res.group = Group.find_or_create_by(name: @@group_name)
+            end
           end
 
           res.video = VIDEO_TRUE if option[:video]

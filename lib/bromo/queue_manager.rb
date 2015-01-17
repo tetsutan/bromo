@@ -25,9 +25,11 @@ module Bromo
     def update_queue
       Bromo.debug("call update_queue")
 
-      Model::Schedule.reset_queue!
-      @@reservations.each do |key, res|
-        Model::Schedule.create_queue(key,res)
+      ActiveRecord::Base.connection_pool.with_connection do
+        Model::Schedule.reset_queue!
+        @@reservations.each do |key, res|
+          Model::Schedule.create_queue(key,res)
+        end
       end
 
       queue.delete_if do |q|

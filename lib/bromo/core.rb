@@ -68,10 +68,15 @@ module Bromo
           while Bromo.exsleep(schedule_updater.minimum_refresh_time_to_left) do
             break if !@refresh_schedule_thread_flag
             Bromo.debug("updater loop: schedule_updater.update")
-            if schedule_updater.update
-              Bromo.debug("updater loop: schedule_updater updated!")
-              queue_manager.update_queue
-              queue_exsleep.stop(true)
+            begin
+              if schedule_updater.update
+                Bromo.debug("updater loop: schedule_updater updated!")
+                queue_manager.update_queue
+                queue_exsleep.stop(true)
+              end
+            rescue
+              sleep 100
+              next
             end
           end
           Bromo.debug "end schedule thread"

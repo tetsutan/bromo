@@ -1,15 +1,18 @@
 development:
   adapter: sqlite3
   database: bromo-development.sqlite
+  pool: 30
   timeout: 30000
 
 test:
   adapter: sqlite3
   database: bromo-test.sqlite
+  pool: 30
   timeout: 30000
 
 production:
   adapter: sqlite3
   database: bromo-production.sqlite
+  pool: 30
   timeout: 30000
 
