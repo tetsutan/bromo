@@ -9,6 +9,8 @@ module Bromo
 
       before_save :create_search_text
 
+      after_destroy :delete_file
+
       RECORDED_NONE = 0
       RECORDED_QUEUE = 1
       RECORDED_RECORDING = 2
@@ -205,6 +207,17 @@ module Bromo
       scope :to_time_asc, ->{
         order("to_time ASC")
       }
+
+      # delete file
+      def delete_file
+        if file_path && !file_path.empty?
+          path = File.join(Config.data_dir, file_path)
+          if path && !path.empty?
+            File.delete(path) if File.file?(path)
+          end
+        end
+      end
+
 
     end
   end
