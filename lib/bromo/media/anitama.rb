@@ -69,8 +69,15 @@ module Bromo
         nodes = doc.xpath('//Node')
         raise if nodes.size < 4
 
-        node_id = nodes[2].css('Id').first.content
-        node_title = nodes[2].css('Title')[1].content
+        node_id_obj = nodes[2].css('Id').first
+        node_title_obj = nodes[2].css('Title')[1]
+
+        if !node_id_obj || !node_title_obj
+          return false
+        end
+
+        node_id = node_id_obj.content
+        node_title = node_title_obj.content
 
         url = "http://www.weeeef.com/weeeef001/OriginalGet"
         uri = URI.parse(url)
