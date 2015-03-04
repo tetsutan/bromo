@@ -11,8 +11,10 @@ test:
   timeout: 30000
 
 production:
-  adapter: sqlite3
-  database: bromo-production.sqlite
-  pool: 30
-  timeout: 30000
+  adapter: mysql2
+  encoding: utf8
+  username: root
+  database: bromo_production
+  password: ~
+
 
