@@ -35,27 +35,15 @@ module Bromo
     def self.check_path
 
       # check rc
-      _rc_path = ENV['BROMO_CONFIG_PATH'] || @@config[:rc_path]
-      _rc_path = File.expand_path rc_path
-      if File.exist? _rc_path
-        self.rc_path = _rc_path
+      if !File.exist? self.rc_path
+        return false
       end
 
       # check dir
-      _data_dir = @@config[:data_dir]
-      _data_dir = File.expand_path _data_dir
-      FileUtils.mkdir_p(_data_dir) if !File.exist?(_data_dir)
-      self.data_dir = _data_dir
+      self.data_dir
+      self.image_dir
+      self.log_dir
 
-      _image_dir = @@config[:image_dir]
-      _image_dir = File.expand_path _image_dir
-      FileUtils.mkdir_p(_image_dir) if !File.exist?(_image_dir)
-      self.image_dir = _image_dir
-
-      _log_dir = @@config[:log_dir]
-      _log_dir = File.expand_path _log_dir
-      FileUtils.mkdir_p(_log_dir) if !File.exist?(_log_dir)
-      self.log_dir = _log_dir
 
       true
     end
@@ -101,6 +89,50 @@ module Bromo
     def self.basic_authentication_env
       [ENV['BASIC_AUTH_USERNAME'], ENV['BASIC_AUTH_PASSWORD']]
     end
+
+
+    @@data_dir = nil
+    def self.data_dir
+      return @@data_dir if @@data_dir
+
+      _data_dir = @@config[:data_dir]
+      _data_dir = File.expand_path _data_dir
+      FileUtils.mkdir_p(_data_dir) if !File.exist?(_data_dir)
+      @@data_dir = _data_dir
+      @@data_dir
+    end
+
+    @@image_dir = nil
+    def self.image_dir
+      return @@image_dir if @@image_dir
+
+      _image_dir = @@config[:image_dir]
+      _image_dir = File.expand_path _image_dir
+      FileUtils.mkdir_p(_image_dir) if !File.exist?(_image_dir)
+      @@image_dir = _image_dir
+      @@image_dir
+    end
+
+    @@log_dir = nil
+    def self.log_dir
+      return @@log_dir if @@log_dir
+
+      _log_dir = @@config[:log_dir]
+      _log_dir = File.expand_path _log_dir
+      FileUtils.mkdir_p(_log_dir) if !File.exist?(_log_dir)
+      @@log_dir = _log_dir
+      @@log_dir
+    end
+
+    @@rc_path = nil
+    def self.rc_path
+      return @@rc_path if @@rc_path
+
+      _rc_path = ENV['BROMO_CONFIG_PATH'] || @@config[:rc_path]
+      @@rc_path = File.expand_path _rc_path
+      @@rc_path
+    end
+
 
   end
 
