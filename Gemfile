@@ -4,6 +4,7 @@ gem 'sqlite3'
 gem 'mysql2'
 gem 'nokogiri'
 
+gem 'rmagick', "2.13.3", :require => 'RMagick'
 gem 'swf_ruby'
 # gem 'librtmp'
 
@@ -28,6 +29,7 @@ gem 'sinatra-activerecord', :require => 'sinatra/activerecord'
 # test
 group :development do
   gem 'pry'
+  gem 'pry-byebug'
   gem "rspec"
   gem 'rack-test'
   gem 'database_cleaner'
