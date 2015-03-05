@@ -18,10 +18,14 @@ module Bromo
         file_path = File.join(Config.image_dir, file_name)
 
         if !File.exist?(file_path)
-          open(url) do |f_image|
-            open(File.join(Config.image_dir, file_name), "w") do |f_dest|
-              f_dest.write(f_image.read)
+          begin
+            open(url) do |f_image|
+              open(File.join(Config.image_dir, file_name), "w") do |f_dest|
+                f_dest.write(f_image.read)
+              end
             end
+          rescue
+            return nil
           end
         end
 

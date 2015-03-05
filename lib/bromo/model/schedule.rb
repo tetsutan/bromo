@@ -24,6 +24,21 @@ module Bromo
 
       attr_accessor :thread
 
+      def to_s
+        datas = [
+          title: title,
+          media_name: media_name,
+          from_time: from_time,
+          to_time: to_time,
+          reserved_1: reserved_1,
+          reserved_2: reserved_2,
+          reserved_3: reserved_3,
+        ].map { |k,v|
+          "#{k}: #{v}"
+          }
+        "#<Schedule #{datas.join(', ')}>"
+      end
+
       def media
         @media ||= QueueManager.medias.find do |m|
           m.name == self.media_name
@@ -167,7 +182,7 @@ module Bromo
         if image_url && @@group_name
           Group.find_or_create_by(name: @@group_name).tap do |group|
             new_image_path = Bromo::Utils.save_image(image_url)
-            if group.image_path != new_image_path
+            if new_image_path && group.image_path != new_image_path
               group.image_path = new_image_path
               group.save
             end
