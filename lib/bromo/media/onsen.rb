@@ -9,7 +9,9 @@ module Bromo
         now = Time.now.to_i
 
         (1..5).each do |week_num|
+          Bromo.debug "updating #{week_num} week on onsen"
           update_programs_from_url("http://www.onsen.ag/getXML.php?#{now*1000}",{'file_name' => "regular_#{week_num}"})
+          Bromo.debug "updating #{week_num} week on onsen done"
         end
 
       end
@@ -36,6 +38,7 @@ module Bromo
             return
           end
 
+          Utils.save_to_file("Onsen_have_checked_updating_schedule_#{params['file_name']}_#{url}", res.body)
           doc = Nokogiri::XML(res.body)
 
           doc.xpath('//data/regular/program').each do |prog|
