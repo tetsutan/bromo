@@ -9,6 +9,7 @@ module Bromo
         6.times do |num|
           update_programs_from_url("http://hibiki-radio.jp/get_program/#{num}")
         end
+        true
       end
 
       def record(schedule)

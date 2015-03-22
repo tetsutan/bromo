@@ -113,10 +113,10 @@ module Bromo
         order("from_time ASC")
       }
 
-      def self.clear_before!(media_name, time=60 * 60 * 24 * 14)
+      def self.clear_before!(media_name, time=60 * 60 * 24 * 30 * 3)
         where(media_name: media_name).
         where(recorded: RECORDED_RECORDED).
-        where("from_time < ?", Time.now.to_i - time). # two weeks ago
+        where("from_time < ?", Time.now.to_i - time). # 3monthes ago
         delete_all
       end
 

@@ -14,6 +14,7 @@ module Bromo
           Bromo.debug "updating #{week_num} week on onsen done"
         end
 
+        true
       end
       def record(schedule)
         recorder = Recorder::Url.new(schedule)

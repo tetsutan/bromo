@@ -8,8 +8,9 @@ module Bromo
       # reserved_1: book_id
 
       HEADERS = {
-        "Host" => "www.animate.tv",
+        "Host" => "www.weeeef.com",
         "User-Agent" => "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:23.0) Gecko/20100101 Firefox/23.0",
+        # "User-Agent" => "Mozilla/5.0 (iPhone; CPU iPhone OS 7_1 like Mac OS X) AppleWebKit/537.51.2 (KHTML, like Gecko) Version/7.0 Mobile/11D167 Safari/9537.53",
         "Accept" => "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
         "Accept-Language" => "ja,en-us;q=0.7,en;q=0.3",
         # "Accept-Encoding" => "gzip, deflate",
@@ -27,9 +28,12 @@ module Bromo
         url = "http://www.weeeef.com/weeeef001/BookServlet"
         res = get_response(url, cookie, COMMAND_URL)
 
-        Utils.save_to_file("AG_is_valid_current_fingerprint_"+url, res)
+        Utils.save_to_file("Anitama_have_checked_updating_schedule", res)
 
         doc = Nokogiri::XML(res)
+
+        return false if doc.children.empty?
+
         doc.xpath("//Books/Book").each do |book|
 
           title = book.attribute('label').text
@@ -57,8 +61,9 @@ module Bromo
 
         end
 
-
+        true
       end
+
       def record(schedule)
         cookie = get_cookie
         referer = COMMAND_URL

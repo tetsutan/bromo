@@ -8,6 +8,7 @@ module Bromo
 
       def update_db
         update_schedule_with_url(REC_URL)
+        true
       end
 
       def record(schedule)

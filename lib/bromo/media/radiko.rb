@@ -82,6 +82,7 @@ module Bromo
         get_station_ids_with_url("http://radiko.jp/v2/station/list/#{@@area_id}.xml?_=#{now}").each do |station_id|
           update_weekly_program_with_url("http://radiko.jp/v2/api/program/station/weekly?station_id=#{station_id}&_=#{now}")
         end
+        true
       end
 
       def get_station_ids_with_url(url)

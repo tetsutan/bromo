@@ -10,6 +10,7 @@ module Bromo
 
       def update_db
         update_programs_from_url("http://ic-www.uniqueradio.jp/iphone_pg/get_program_json3.php")
+        true
       end
       def record(schedule)
         recorder = Recorder::M3u.new("http://ic-www.uniqueradio.jp/iphone/3G.m3u8", realtime?)

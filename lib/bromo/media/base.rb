@@ -120,7 +120,10 @@ module Bromo
         if need_refresh?
           Bromo.debug "#{name} updating.."
           clear_before
-          update_db
+          3.times do |num|
+            Bromo.debug "#{name} pre_updatedb #{num} .."
+            break if update_db
+          end
           information = Model::MediaInformation.find_by(media_name: name)
           information.schedule_updated_at = Time.now
           information.save

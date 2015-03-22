@@ -25,6 +25,7 @@ module Bromo
           break if !Bromo::Core.running?
           break if offset > 50 # force break
         end
+        true
       end
 
       def record(schedule)

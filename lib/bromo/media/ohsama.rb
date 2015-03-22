@@ -7,6 +7,7 @@ module Bromo
 
       def update_db
         update_programs_from_url("http://cnt.kingrecords.co.jp/ohsama/")
+        true
       end
       def record(schedule)
         m3u_url = "http://c.brightcove.co.jp/services/mobile/streaming/index/master.m3u8?videoId=#{schedule.reserved_1}"
