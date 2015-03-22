@@ -3,14 +3,17 @@ module Bromo
 
   class Config
 
+    @@production = ENV['RACK_ENV'] == 'production'
+    @@dot_bromo = @@production ? ".bromo" : ".bromo.development"
+
     @@config = {
       rc_path: "~/.bromorc.rb",
-      data_dir: "~/.bromo/data",
-      image_dir: "~/.bromo/image",
-      log_dir: "~/.bromo/log",
+      data_dir: "~/#{@@dot_bromo}/data",
+      image_dir: "~/#{@@dot_bromo}/image",
+      log_dir: "~/#{@@dot_bromo}/log",
       host: nil, # sinatra set host
-      port: '7970', # sinatra set port
-      debug: false,
+      port: @@production ? '7970' : '3000', # sinatra set port
+      debug: !@@production,
       podcast_title_prefix: 'Bromo: ',
       podcast_link: nil, # same as host if nil
     }
