@@ -19,12 +19,22 @@ module Bromo
         Bromo.debug "#{object_id} tempfile.path = #{tempfile.path}"
 
         # download
-        cmd = "rtmpdump \
-          -s 'http://hibiki-radio.jp/player/Hibiki_FLV_Player.swf' \
-          -r '#{schedule.reserved_1}' \
-          -o '#{tempfile.path}' "
-        Bromo.debug "#{object_id} rtmp command: #{cmd}"
-        `#{cmd}`
+
+        # 3times retry
+        3.times do
+          cmd = "rtmpdump \
+            -s 'http://hibiki-radio.jp/player/Hibiki_FLV_Player.swf' \
+            -r '#{schedule.reserved_1}' \
+            -o '#{tempfile.path}' "
+          Bromo.debug "#{object_id} rtmp command: #{cmd}"
+          `#{cmd}`
+          status = $?.to_i
+          Bromo.debug "#{object_id} rtmp status: #{status}"
+          break if statsu == 0
+          sleep 3
+        end
+
+        return nil if status != 0
         Bromo.debug "#{object_id} recording done #{self.name}"
 
         file_name = generate_filename(schedule.title, schedule.video?)
@@ -82,7 +92,9 @@ module Bromo
               begin
                 open("http://image.hibiki-radio.jp/uploads/data/channel/#{video_id}/#{contents_id}.xml?#{now}000") do |f3|
 
-                  doc = Nokogiri::XML(f3.read.gsub(/&/, "&amp;"))
+                  text = f3.read
+                  Utils.save_to_file("hibiki_channel_#{video_id}_#{contents_id}", text)
+                  doc = Nokogiri::XML(text.gsub(/&/, "&amp;"))
                   protocol = doc.xpath('//data/protocol').first.content
                   domain = doc.xpath('//data/domain').first.content
                   dir = doc.xpath('//data/dir').first.content
