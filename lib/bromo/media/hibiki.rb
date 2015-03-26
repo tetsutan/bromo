@@ -21,6 +21,7 @@ module Bromo
         # download
 
         # 3times retry
+        status = 0
         3.times do
           cmd = "rtmpdump \
             -s 'http://hibiki-radio.jp/player/Hibiki_FLV_Player.swf' \
@@ -30,7 +31,7 @@ module Bromo
           `#{cmd}`
           status = $?.to_i
           Bromo.debug "#{object_id} rtmp status: #{status}"
-          break if statsu == 0
+          break if status == 0
           sleep 3
         end
 

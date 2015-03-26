@@ -122,12 +122,15 @@ module Bromo
     get '/data/*' do |file_name|
       protected!
 
+      Bromo.debug "Download request #{file_name}"
+
       path = check_filepath(file_name, Config.data_dir)
 
       return unless path && File.file?(path)
 
       env['sinatra.static_file'] = path
       cache_control(*settings.static_cache_control) if settings.static_cache_control?
+      Bromo.debug "Download start #{file_name}"
       send_file path, :disposition => nil
     end
     get '/image/*' do |file_name|
@@ -171,9 +174,11 @@ module Bromo
 
       id = params[:id]
 
-      schedule = Model::Schedule.find(id)
-      schedule.recorded = Model::Schedule::RECORDED_QUEUE
-      schedule.save!
+      ActiveRecord::Base.connection_pool.with_connection do
+        schedule = Model::Schedule.find(id)
+        schedule.recorded = Model::Schedule::RECORDED_QUEUE
+        schedule.save!
+      end
 
       Core.core.queue_exsleep.stop(true)
     end
