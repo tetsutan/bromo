@@ -10,7 +10,13 @@ module Bromo
 
     def minimum_refresh_time_to_left
       more_wait_for_check_need_update = 5
-      QueueManager.medias.map(&:next_update).min - Time.now + more_wait_for_check_need_update
+
+      if QueueManager.medias.size == 0
+        more_wait_for_check_need_update
+      else
+        QueueManager.medias.map(&:next_update).min - Time.now + more_wait_for_check_need_update
+      end
+
     end
   end
 end
