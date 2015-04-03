@@ -78,6 +78,7 @@ GEM
     swf_ruby (0.2.3)
       bundler (>= 1.0.0.rc.5)
       rmagick (>= 2.13.0)
+    systemu (2.6.5)
     temple (0.7.5)
     thin (1.6.3)
       daemons (~> 1.0, >= 1.0.9)
@@ -112,5 +113,6 @@ DEPENDENCIES
   sqlite3
   streamio-ffmpeg
   swf_ruby
+  systemu
   thin
   unf

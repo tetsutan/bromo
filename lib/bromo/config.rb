@@ -16,6 +16,8 @@ module Bromo
       debug: !@@production,
       podcast_title_prefix: 'Bromo: ',
       podcast_link: nil, # same as host if nil
+      rtmpdump: "rtmpdump",
+      ffmpeg: "ffmpeg",
     }
 
     def self.configure(&block)
@@ -47,11 +49,24 @@ module Bromo
       self.image_dir
       self.log_dir
 
+      self.check_config
 
       true
     end
 
     def self.check_config
+
+      status, stdout, stderr = systemu("#{self.rtmpdump} -h")
+      if status != 0
+        raise "No rtmpdump"
+      end
+
+      status, stdout, stderr = systemu("#{self.ffmpeg} -h")
+      if status != 0
+        raise "No ffmpeg"
+      end
+      FFMPEG.ffmpeg_binary = self.ffmpeg
+
       true
     end
 

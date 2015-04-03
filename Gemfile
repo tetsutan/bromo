@@ -8,6 +8,7 @@ gem 'rmagick', "2.13.3", :require => 'RMagick'
 gem 'swf_ruby'
 # gem 'librtmp'
 
+gem 'systemu'
 gem 'streamio-ffmpeg'
 
 

@@ -23,7 +23,7 @@ module Bromo
         # 3times retry
         status = 0
         3.times do
-          cmd = "rtmpdump \
+          cmd = "#{Config.rtmpdump} \
             -s 'http://hibiki-radio.jp/player/Hibiki_FLV_Player.swf' \
             -r '#{schedule.reserved_1}' \
             -o '#{tempfile.path}' "

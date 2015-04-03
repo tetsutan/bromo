@@ -1,4 +1,6 @@
 
+require 'systemu'
+
 require 'bromo/utils'
 require 'bromo/env'
 

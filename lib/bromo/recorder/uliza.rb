@@ -208,7 +208,7 @@ module Bromo
         end
 
         return [
-          "rtmpdump",
+          Config.rtmpdump,
           _v.join(" "),
           content,
           "-o #{out_filepath.path}"

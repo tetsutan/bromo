@@ -191,7 +191,6 @@ module Bromo
 
       def _record_to_path(filepath, channel,duration)
         playerurl="http://radiko.jp/player/swf/player_3.0.0.01.swf"
-        rtmpdump="/usr/local/bin/rtmpdump"
         
         # use open-uri to get fileobject
         retry_cont = 0
@@ -334,7 +333,7 @@ module Bromo
                   # filepath = File.join(::Bromo.data_dir, t.strftime("%Y%m%d_%H%M_") + authtoken)
           
 
-                  cmd = "rtmpdump \
+                  cmd = "#{Config.rtmpdump} \
                     -r #{rtmp_path} \
                     --app #{app} \
                     --playpath #{playpath} \
