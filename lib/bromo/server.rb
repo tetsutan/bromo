@@ -110,7 +110,7 @@ module Bromo
 
             item.enclosure.url = URI.encode("http://#{hostname}/data/#{file_name}")
             item.enclosure.length = File.size(file_path)
-            item.enclosure.type = "audio/mpeg"
+            item.enclosure.type = schedule.video? ? "video/mp4": "audio/mpeg"
           end
         end
 
