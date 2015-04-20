@@ -120,7 +120,7 @@ module Bromo
     end
 
     get '/data/*' do |file_name|
-      protected!
+      protected! unless Config.remove_protection_when_sending_data
 
       Bromo.debug "Download request #{file_name}"
 
@@ -134,7 +134,7 @@ module Bromo
       send_file path, :disposition => nil
     end
     get '/image/*' do |file_name|
-      protected!
+      protected! unless Config.remove_protection_when_sending_data
 
       path = check_filepath(file_name, Config.image_dir)
 
