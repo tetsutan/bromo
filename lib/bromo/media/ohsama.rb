@@ -38,13 +38,12 @@ module Bromo
             text = f.read
             Utils.save_to_file("OHSAMA_is_valid_bctic_"+url, text)
             doc = Nokogiri::HTML(text)
-            doc.css('#content4 ul li').each do |litag|
+            doc.css('#mainvisual .containerInner div').each do |divtag|
 
-              title = litag.css(".artist_name").first.content +
-                litag.css(".content_name").first.content
+              title = divtag.css("img").first["alt"]
               desc = title
 
-              atag = litag.css("a").first
+              atag = divtag.css("a").first
               href = atag['href']
               description_url = "#{base_url}#{href}"
 
