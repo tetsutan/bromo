@@ -116,3 +116,6 @@ DEPENDENCIES
   systemu
   thin
   unf
+
+BUNDLED WITH
+   1.10.4
