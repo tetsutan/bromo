@@ -102,7 +102,15 @@ module Bromo
                   # flv = doc.xpath('//data/channel/flv').first.inner_html.gsub(/&amp;/, "&")
                   flv = doc.xpath('//data/channel/flv').first.content
 
-                  schedule.reserved_1 = "#{protocol}://#{domain}/#{dir}/#{flv}"
+                  if flv.present?
+                    schedule.reserved_1 = "#{protocol}://#{domain}/#{dir}/#{flv}"
+                    schedule.from_time = now + 60
+                  else
+                    # preliminary announcement only
+                    # 期限が過ぎたことにする
+                    schedule.from_time = Time.at(0)
+                    # schedule.to_time = Time.at(0) # from_timeでチェックしているのでto_timeは必要ない
+                  end
 
                 end
               rescue => e
@@ -111,7 +119,6 @@ module Bromo
                 next
               end
 
-              schedule.from_time = now + 60
               schedule.save_since_finger_print_not_exist
 
             end
