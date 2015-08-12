@@ -127,8 +127,13 @@ module Bromo
       scope :channel, ->(name){
         where(channel_name: name)
       }
-      scope :search, ->(key){
-        where("search_text like ?", "%#{Utils.normalize_search_text(key)}%")
+      scope :search, ->(key, where_not = false){
+        cond = "search_text like ?", "%#{Utils.normalize_search_text(key)}%"
+        if where_not
+          where.not(cond)
+        else
+          where(cond)
+        end
       }
 
       DAYS = %w/sunday monday tuesday wednesday thursday friday saturday/
