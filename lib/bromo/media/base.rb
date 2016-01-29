@@ -171,6 +171,11 @@ module Bromo
         Bromo.debug "#{object_id} tempfile path = #{tempfile.path}"
         Bromo.debug "#{object_id} data size = #{data.size}"
 
+        # DEBUG
+        # File.open(File.join(Config.log_dir, file_name), "w") do |f|
+        #   f.write data
+        # end
+
         # transcord to mp3
         begin
           file = FFMPEG::Movie.new(tempfile.path)

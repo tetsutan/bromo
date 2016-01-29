@@ -39,7 +39,7 @@ module Bromo
     end
 
     def self.shell_filepathable(str)
-      str.gsub(/[ \/\\\"\':?=\.]/,'').gsub(/[[:cntrl:]]/,"")
+      str.gsub(/[ \/\\\"\':?=]/,'').gsub(/[[:cntrl:]]/,"")
     end
 
     def self.sanitize(str, remove_control=true)
@@ -57,6 +57,64 @@ module Bromo
         f.write data
       end
 
+    end
+
+
+    FIREFOX_HEADERS = {
+      "User-Agent" => "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:23.0) Gecko/20100101 Firefox/23.0",
+      "Accept" => "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+      "Accept-Language" => "ja,en-us;q=0.7,en;q=0.3",
+      "Connection" => "keep-alive",
+      "Cache-Control" => "max-age=0"
+    }
+    def self.cookie_with(url, options = {})
+
+      uri = URI.parse(url)
+
+      https = Net::HTTP.new(uri.host, uri.port)
+      if uri.scheme == "https"
+        https.use_ssl = true
+        https.verify_mode = OpenSSL::SSL::VERIFY_NONE
+      end
+
+      https.start do |http|
+
+        request = Net::HTTP::Get.new(uri.request_uri)
+
+        # FIREFOX_HEADERS.each do |k,v|
+        #   request[k] = v
+        # end
+        request['Host'] = uri.host
+        # request['Cookie'] = cookie if cookie
+        # request['Referer'] = referer if referer
+        options.each do |k,v|
+          request[k] = v
+        end
+
+        begin
+          response = http.request(request)
+        rescue Errno::ETIMEDOUT => exc
+          Bromo.debug "#{object_id} ERROR: #{exc.message}"
+          Bromo.debug "#{object_id} Can't open #{url} F#{__FILE__} L#{__LINE__}"
+          return false
+        end
+
+        cookie = response.get_fields("Set-Cookie") if !cookie
+        yield(response, cookie)
+      end
+
+    end
+
+    def self.query_to_hash(str, first_divider="&", second_divider="=")
+      str.split(first_divider).inject({}) do |res, val|
+        k,v = val.split(second_divider, 2)
+
+        if v[0] == '"' && v[v.size-1] == '"'
+          v = v[1, v.size - 2]
+        end
+
+        v ? res.merge({k => v}) : res.merge({k => true})
+      end
     end
 
   end

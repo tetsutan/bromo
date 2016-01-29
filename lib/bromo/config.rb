@@ -17,7 +17,7 @@ module Bromo
       podcast_title_prefix: 'Bromo: ',
       podcast_link: nil, # same as host if nil
       rtmpdump: "rtmpdump",
-      ffmpeg: "ffmpeg",
+      ffmpeg: `which ffmpeg`.strip,
       remove_protection_when_sending_data: false,
     }
 
