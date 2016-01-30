@@ -76,12 +76,15 @@ module Bromo
               open("#{base_url}#{detail_path}") do |f2|
                 detail_page = Nokogiri::HTML(f2.read)
 
-                description = detail_page.css('div.textBox').first.text
+                description = detail_page.css('div#tabBox01').first.text
 
-                detail_page.css('div.playBox').each do |playbox|
-                  title = playbox.css('div.ttlArea h3').first.content
-                  playpath = playbox.css('div.btnArea p.btn a').first['href']
-                  _date = playbox.css('div.ttlArea span.date').first.content
+                detail_page.css('div.play').each do |playbox|
+
+                  next if playbox.css("li.flash").size == 0
+
+                  title = playbox.css('li.flash p').first.content
+                  playpath = playbox.css('li.flash a').first['href']
+                  _date = playbox.css('ul.date li').first.content
 
                   next if title.include?("WMP") # ignore wmv
 
@@ -112,6 +115,7 @@ module Bromo
           end
         rescue => e
           Bromo.debug e.message
+          puts e.backtrace
           Bromo.debug "#{object_id} Can't open #{url} F#{__FILE__} L#{__LINE__}"
           return true
         end
@@ -129,9 +133,9 @@ module Bromo
             cookie_hash = parse_cookie(cookie)
             if cookie_hash["atv"]
               detail_page = Nokogiri::HTML(res.body)
-              detail_page.css('div.playBox').each do |playbox|
-                title = playbox.css('div.ttlArea h3').first.content
-                playpath = playbox.css('div.btnArea p.btn a').first['href']
+              detail_page.css('div.play').each do |playbox|
+                title = playbox.css('li.flash p').first.content
+                playpath = playbox.css('li.flash a').first['href']
 
                 next if title.include?("WMP") # ignore wmv
 
