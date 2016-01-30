@@ -9,6 +9,7 @@ module Bromo
       attr_accessor :request_options
       attr_accessor :m3us
       attr_accessor :downloaded_inf_ids
+      attr_accessor :m3uTmpDir
 
       def initialize(url, realtime = false, request_options = {})
         self.url = url
@@ -19,6 +20,10 @@ module Bromo
           # url: obj
         }
         self.downloaded_inf_ids = []
+
+        # tmpdir
+        self.m3uTmpDir = Dir.mktmpdir("m3u-" + Utils.shell_filepathable(url))
+
       end
 
       def record(to_time=0)
@@ -91,7 +96,7 @@ module Bromo
                       _m3u = M3u.new(m3u_url, realtime, request_options)
                       self.m3us[m3u_url] = _m3u.record(to_time)
                     else
-                      self.m3us[m3u_url] = M3uDownloader.new(m3u_url, request_options)
+                      self.m3us[m3u_url] = M3uDownloader.new(m3u_url, request_options, m3uTmpDir)
                     end
                     self.downloaded_inf_ids.push(inf_id) if inf_id
                   end
@@ -148,12 +153,10 @@ module Bromo
           _m3us.push(data)
         end
 
-        # close m3u
-        self.m3us.each do |key, m3u|
-          m3u.close if m3u.is_a? M3uDownloader
-        end
-
         data = _m3us.join
+        Bromo.debug "#{object_id} M3u temp dir = #{self.m3uTmpDir}"
+        FileUtils.remove_entry_secure self.m3uTmpDir
+        data
 
       end
 
@@ -205,14 +208,16 @@ module Bromo
 
         attr_accessor :url
         attr_accessor :request_options
-        attr_accessor :use_file_for_download, :downloaded_file
+        attr_accessor :use_file_for_download , :download_filepath
+        attr_accessor :m3uTmpDir
 
-        def initialize(_url, request_options = {})
+        def initialize(_url, request_options = {}, m3uTmpDir = Dir.mktmpdir("m3u-" + Utils.shell_filepathable(_url)))
           self.url = _url
           self.request_options = request_options
           self.use_file_for_download = true
+          self.m3uTmpDir = m3uTmpDir
           if self.use_file_for_download
-            self.downloaded_file = Tempfile.open('downloaded_cache_')
+            self.download_filepath = File.join(m3uTmpDir, Utils.shell_filepathable(_url))
           end
         end
 
@@ -222,7 +227,9 @@ module Bromo
               Utils.cookie_with(self.url, request_options) do |res, cookie|
                 _data = res.body
                 if self.use_file_for_download
-                  self.downloaded_file.write(_data)
+                  open(self.download_filepath, "w") do |f|
+                    f.write(_data)
+                  end
                 else
                   @data = _data
                 end
@@ -237,7 +244,7 @@ module Bromo
 
         def downloaded?
           if self.use_file_for_download
-            self.downloaded_file.size > 0
+            FileTest.size?(self.download_filepath)
           else
             !!@data
           end
@@ -245,15 +252,13 @@ module Bromo
 
         def data
           if self.use_file_for_download
-            self.downloaded_file.rewind
-            self.downloaded_file.read
+            f = open(self.download_filepath)
+            data = f.read
+            f.close
+            data
           else
             @data
           end
-        end
-
-        def close
-          self.downloaded_file.close if self.use_file_for_download && self.downloaded_file
         end
 
       end
