@@ -22,7 +22,8 @@ module Bromo
         self.downloaded_inf_ids = []
 
         # tmpdir
-        self.m3uTmpDir = Dir.mktmpdir("m3u-" + Utils.shell_filepathable(url))
+        tmpdirname = url ? url : Time.now.to_i.to_s
+        self.m3uTmpDir = Dir.mktmpdir("m3u-" + Utils.shell_filepathable(tmpdirname))
 
       end
 
