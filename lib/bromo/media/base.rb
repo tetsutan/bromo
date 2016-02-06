@@ -156,7 +156,7 @@ module Bromo
         end
         begin
           Bromo.debug "call transcode"
-          file.transcode(dst_path)
+          file.transcode(dst_path, Config.ffmpeg_options)
         rescue
           Bromo.debug "transcode failed"
           FileUtils.copy(src_path, dst_path + ".err")
@@ -188,7 +188,7 @@ module Bromo
 
         delay_converting
         rec_filepath = File.join(Config.data_dir, file_name)
-        file.transcode(rec_filepath)
+        file.transcode(rec_filepath, Config.ffmpeg_options)
 
         # remove old file
         tempfile.close(true)

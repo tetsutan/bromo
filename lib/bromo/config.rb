@@ -18,6 +18,7 @@ module Bromo
       podcast_link: nil, # same as host if nil
       rtmpdump: "rtmpdump",
       ffmpeg: `which ffmpeg`.strip,
+      ffmpeg_options: {},
       remove_protection_when_sending_data: false,
     }
 

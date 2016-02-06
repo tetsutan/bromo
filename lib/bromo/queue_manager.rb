@@ -115,6 +115,7 @@ module Bromo
                 s.start_recording
               rescue => ex
                 Bromo.debug ex.message
+                puts ex.backtrace
                 s = Model::Schedule.find(s.id)
                 s.recorded = Model::Schedule::RECORDED_FAILED
                 s.save

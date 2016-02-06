@@ -36,7 +36,6 @@ module Bromo
         base_url = File.dirname(url)
 
         target_duration = 9
-        encription_option = nil
         Bromo.debug "#{object_id} from(now): #{Time.now.to_i} to: #{to_time.to_i}"
         Bromo.debug "#{object_id} realtime = #{realtime}"
 
@@ -62,8 +61,13 @@ module Bromo
                 self.request_options = _r
               end
               Bromo.debug "#{object_id} m3u cookie2= #{self.request_options['Cookie']}"
-              res.body.each_line do |line|
+              m3u_text = res.body
+              Utils.save_to_file("M3u_text_"+url, m3u_text)
 
+              encription_option = nil
+              m3u_text.each_line do |line|
+
+                id = -1
                 if line.match(/^#/)
                   if line.match(/^#EXT-X-TARGETDURATION:([0-9]*)$/)
                     # update target duration
@@ -97,7 +101,7 @@ module Bromo
                       _m3u = M3u.new(m3u_url, realtime, request_options)
                       self.m3us[m3u_url] = _m3u.record(to_time)
                     else
-                      self.m3us[m3u_url] = M3uDownloader.new(m3u_url, request_options, m3uTmpDir)
+                      self.m3us[m3u_url] = M3uDownloader.new(m3u_url, request_options, m3uTmpDir, encription_option)
                     end
                     self.downloaded_inf_ids.push(inf_id) if inf_id
                   end
@@ -133,22 +137,12 @@ module Bromo
         # concat
         # data = self.m3us.values.map{|m3u| m3u.data }.join
         _m3us = []
-        _decrypter = nil
-        if encription_option
-          _decrypter = Decrypter.new(request_options, encription_option)
-        end
 
         self.m3us.each do |key, m3u|
           data = if m3u.is_a? M3uDownloader
             m3u.data
           else
             m3u
-          end
-
-          if _decrypter
-            # Utils.save_to_file("m3u_ts_#{key}.ts", data)
-            data = _decrypter.decrypt(data)
-            # assert("hoge")
           end
 
           _m3us.push(data)
@@ -170,7 +164,8 @@ module Bromo
             Bromo.debug "#{object_id} M3u Encript: cookie = #{request_options['Cookie']}"
             Utils.cookie_with(url, request_options) do |res, cookie|
               key = res.body
-              iv = encription_option["IV"]
+              iv = encription_option["IV"] || "0x00000000000000000000000000000000"
+
               if iv[0,2] == "0x"
                 # iv = [ iv[2,iv.size-2] ].pack("H*")
                 iv = iv[2,iv.size-2].unpack('a2'*16).map{ |x| x.hex }.pack('C'*16)
@@ -211,12 +206,14 @@ module Bromo
         attr_accessor :request_options
         attr_accessor :use_file_for_download , :download_filepath
         attr_accessor :m3uTmpDir
+        attr_accessor :encription_option
 
-        def initialize(_url, request_options = {}, m3uTmpDir = Dir.mktmpdir("m3u-" + Utils.shell_filepathable(_url)))
+        def initialize(_url, request_options = {}, m3uTmpDir = Dir.mktmpdir("m3u-" + Utils.shell_filepathable(_url)), encription_option = nil)
           self.url = _url
           self.request_options = request_options
           self.use_file_for_download = true
           self.m3uTmpDir = m3uTmpDir
+          self.encription_option = encription_option
           if self.use_file_for_download
             self.download_filepath = File.join(m3uTmpDir, Utils.shell_filepathable(_url))
           end
@@ -224,6 +221,7 @@ module Bromo
 
         def download
           if self.url
+            Bromo.debug "#{object_id} m3u download #{self.url}"
             begin
               Utils.cookie_with(self.url, request_options) do |res, cookie|
                 _data = res.body
@@ -252,7 +250,7 @@ module Bromo
         end
 
         def data
-          if self.use_file_for_download
+          _d = if self.use_file_for_download
             f = open(self.download_filepath)
             data = f.read
             f.close
@@ -260,6 +258,14 @@ module Bromo
           else
             @data
           end
+
+          if self.encription_option
+            decrypter = Decrypter.new(self.request_options, self.encription_option)
+            decrypter.decrypt(_d)
+          else
+            _d
+          end
+
         end
 
       end
