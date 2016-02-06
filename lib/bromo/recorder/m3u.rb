@@ -160,8 +160,8 @@ module Bromo
         def initialize(request_options, encription_option)
           if encription_option["METHOD"] == "AES-128"
             url = encription_option["URI"]
-            Bromo.debug "#{object_id} M3u Encript: url = #{url}"
-            Bromo.debug "#{object_id} M3u Encript: cookie = #{request_options['Cookie']}"
+            # Bromo.debug "#{object_id} M3u Encript: url = #{url}"
+            # Bromo.debug "#{object_id} M3u Encript: cookie = #{request_options['Cookie']}"
             Utils.cookie_with(url, request_options) do |res, cookie|
               key = res.body
               iv = encription_option["IV"] || "0x00000000000000000000000000000000"
@@ -175,8 +175,8 @@ module Bromo
 
               # Bromo.debug "#{object_id} M3u Decript: key = #{key}"
               # Bromo.debug "#{object_id} M3u Decript: iv = #{iv}"
-              Bromo.debug "#{object_id} M3u Decript: base64 key = #{Base64.encode64(key)}"
-              Bromo.debug "#{object_id} M3u Decript: base64 iv = #{Base64.encode64(iv)}"
+              # Bromo.debug "#{object_id} M3u Decript: base64 key = #{Base64.encode64(key)}"
+              # Bromo.debug "#{object_id} M3u Decript: base64 iv = #{Base64.encode64(iv)}"
 
               s = OpenSSL::Cipher.new('aes-128-cbc')
               s.key = key
@@ -221,7 +221,7 @@ module Bromo
 
         def download
           if self.url
-            Bromo.debug "#{object_id} m3u download #{self.url}"
+            # Bromo.debug "#{object_id} m3u download #{self.url}"
             begin
               Utils.cookie_with(self.url, request_options) do |res, cookie|
                 _data = res.body

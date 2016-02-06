@@ -176,11 +176,15 @@ module Bromo
         #   f.write data
         # end
 
+        # GC
+        GC.start
+
         # transcord to mp3
         begin
           file = FFMPEG::Movie.new(tempfile.path)
           name = Utils.shell_filepathable(self.name)
         rescue => e
+          Bromo.debug e.backtrace
           Bromo.debug e.message
           Bromo.debug "Cant open tempfile #{tempfile.path}"
           return
