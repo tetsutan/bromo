@@ -160,9 +160,10 @@ module Bromo
         def initialize(request_options, encription_option)
           if encription_option["METHOD"] == "AES-128"
             url = encription_option["URI"]
-            # Bromo.debug "#{object_id} M3u Encript: url = #{url}"
-            # Bromo.debug "#{object_id} M3u Encript: cookie = #{request_options['Cookie']}"
+            Bromo.debug "#{object_id} M3u Encript: url = #{url}"
+            Bromo.debug "#{object_id} M3u Encript: cookie = #{request_options['Cookie']}"
             Utils.cookie_with(url, request_options) do |res, cookie|
+
               key = res.body
               iv = encription_option["IV"] || "0x00000000000000000000000000000000"
 
@@ -170,13 +171,18 @@ module Bromo
                 # iv = [ iv[2,iv.size-2] ].pack("H*")
                 iv = iv[2,iv.size-2].unpack('a2'*16).map{ |x| x.hex }.pack('C'*16)
               else
-                assert("Unsupported IV binary = " + iv)
+                raise ("Unsupported IV binary = " + iv)
               end
 
-              # Bromo.debug "#{object_id} M3u Decript: key = #{key}"
-              # Bromo.debug "#{object_id} M3u Decript: iv = #{iv}"
-              # Bromo.debug "#{object_id} M3u Decript: base64 key = #{Base64.encode64(key)}"
-              # Bromo.debug "#{object_id} M3u Decript: base64 iv = #{Base64.encode64(iv)}"
+              if !key
+                raise ("key is empty")
+              end
+
+              Bromo.debug "#{object_id} M3u Decript: response.code = #{response.code}"
+              Bromo.debug "#{object_id} M3u Decript: key = #{key}"
+              Bromo.debug "#{object_id} M3u Decript: iv = #{iv}"
+              Bromo.debug "#{object_id} M3u Decript: base64 key = #{Base64.encode64(key)}"
+              Bromo.debug "#{object_id} M3u Decript: base64 iv = #{Base64.encode64(iv)}"
 
               s = OpenSSL::Cipher.new('aes-128-cbc')
               s.key = key
