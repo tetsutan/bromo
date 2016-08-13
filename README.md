@@ -5,21 +5,31 @@
 
 音声・動画データを取得してposdcast形式で配信するサーバーです
 単品の録音データを取得するのではなく、スケジュールリストから自動で録音・録画を行います。
-例えば、一階限りの
 
+
+## Make .bromorc.rb at ~/
+
+See samples/bromorc.sample.rb
+
+## Requirements
+
+Mysql
 
 ## Installation
 
 bundle install
+RACK_ENV=production be rake db:migrate
 
 ## Usage
 
+BASIC_AUTH_USERNAME=bromo BASIC_AUTH_PASSWORD=password RACK_ENV=production be ruby -I./lib ./bin/bromo
+
+then access, http://localhost:7970/status
 
 ## Requirements
 
 - rtmpdump
 - ffmpeg
-- o
 
 ## TBD
 - Currently anitama not working
